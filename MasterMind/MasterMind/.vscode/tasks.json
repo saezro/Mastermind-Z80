@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+                {
+            "label": "sjasmplus",
+            "type": "shell",
+            "command": "..\\MasterMind\\.vscode\\sjasmplus118.exe", 
+            "args": [
+                "--lst=${fileDirname}/${fileBasenameNoExtension}.lst",
+                "--sld=${fileDirname}/${fileBasenameNoExtension}.sld",
+                "--raw=${fileDirname}/${fileBasenameNoExtension}.bin",
+                "--fullpath",
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+            
+        }
+    ]
+}

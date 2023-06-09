@@ -1,0 +1,30 @@
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "rootFolder": "${workspaceFolder}",
+            "type": "dezog",
+            "request": "launch",
+            "name": "Simulator",
+            "remoteType": "zsim",
+            "zsim": {
+                "memoryModel": "ZX48K",
+                "vsyncInterrupt": true,
+                "ulaScreen": true,
+                "zxKeyboard": true,
+                "zxBorderWidth": 20,
+                "zxBeeper": true
+            },
+            "sjasmplus": [
+                {
+                    "path": "${fileDirname}/${fileBasenameNoExtension}.sld"
+                }
+            ],
+            "topOfStack": "0",
+           "loadObjs": [{"path": "${fileDirname}/${fileBasenameNoExtension}.bin", "start": "0x8000"}],
+           "execAddress": "0x8000"
+        }
+        
+    ]
+}

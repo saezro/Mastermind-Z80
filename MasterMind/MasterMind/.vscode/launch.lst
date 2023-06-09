@@ -1,0 +1,145 @@
+# file opened: c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json
+ 1    0000
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(2): error: Invalid labelname: {
+ 2    0000              {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(3): error: Unrecognized instruction: "version"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(3): error: Unexpected: "version"
+ 3    0000                  "version"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(3): error: Unrecognized instruction: "0.2.0",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(3): error: Unexpected: "0.2.0",
+ 3    0000                "0.2.0",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(4): error: Unrecognized instruction: "configurations"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(4): error: Unexpected: "configurations"
+ 4    0000                  "configurations"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(4): error: Unrecognized instruction: [
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(4): error: Unexpected: [
+ 4    0000                [
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(5): error: Unrecognized instruction: {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(5): error: Unexpected: {
+ 5    0000                      {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(6): error: Unrecognized instruction: "rootFolder"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(6): error: Unexpected: "rootFolder"
+ 6    0000                          "rootFolder"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(6): error: Unrecognized instruction: "${workspaceFolder}",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(6): error: Unexpected: "${workspaceFolder}",
+ 6    0000                "${workspaceFolder}",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(7): error: Unrecognized instruction: "type"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(7): error: Unexpected: "type"
+ 7    0000                          "type"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(7): error: Unrecognized instruction: "dezog",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(7): error: Unexpected: "dezog",
+ 7    0000                "dezog",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(8): error: Unrecognized instruction: "request"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(8): error: Unexpected: "request"
+ 8    0000                          "request"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(8): error: Unrecognized instruction: "launch",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(8): error: Unexpected: "launch",
+ 8    0000                "launch",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(9): error: Unrecognized instruction: "name"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(9): error: Unexpected: "name"
+ 9    0000                          "name"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(9): error: Unrecognized instruction: "Simulator",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(9): error: Unexpected: "Simulator",
+ 9    0000                "Simulator",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(10): error: Unrecognized instruction: "remoteType"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(10): error: Unexpected: "remoteType"
+10    0000                          "remoteType"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(10): error: Unrecognized instruction: "zsim",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(10): error: Unexpected: "zsim",
+10    0000                "zsim",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(11): error: Unrecognized instruction: "zsim"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(11): error: Unexpected: "zsim"
+11    0000                          "zsim"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(11): error: Unrecognized instruction: {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(11): error: Unexpected: {
+11    0000                {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(12): error: Unrecognized instruction: "memoryModel"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(12): error: Unexpected: "memoryModel"
+12    0000                              "memoryModel"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(12): error: Unrecognized instruction: "ZX48K",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(12): error: Unexpected: "ZX48K",
+12    0000                "ZX48K",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(13): error: Unrecognized instruction: "vsyncInterrupt"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(13): error: Unexpected: "vsyncInterrupt"
+13    0000                              "vsyncInterrupt"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(13): error: Unrecognized instruction: true,
+13    0000                true,
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(14): error: Unrecognized instruction: "ulaScreen"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(14): error: Unexpected: "ulaScreen"
+14    0000                              "ulaScreen"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(14): error: Unrecognized instruction: true,
+14    0000                true,
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(15): error: Unrecognized instruction: "zxKeyboard"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(15): error: Unexpected: "zxKeyboard"
+15    0000                              "zxKeyboard"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(15): error: Unrecognized instruction: true,
+15    0000                true,
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(16): error: Unrecognized instruction: "zxBorderWidth"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(16): error: Unexpected: "zxBorderWidth"
+16    0000                              "zxBorderWidth"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(16): error: Unrecognized instruction: 20,
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(16): error: Unexpected: 20,
+16    0000                20,
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(17): error: Unrecognized instruction: "zxBeeper"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(17): error: Unexpected: "zxBeeper"
+17    0000                              "zxBeeper"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(17): error: Unrecognized instruction: true
+17    0000                true
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(18): error: Unrecognized instruction: },
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(18): error: Unexpected: },
+18    0000                          },
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(19): error: Unrecognized instruction: "sjasmplus"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(19): error: Unexpected: "sjasmplus"
+19    0000                          "sjasmplus"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(19): error: Unrecognized instruction: [
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(19): error: Unexpected: [
+19    0000                [
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(20): error: Unrecognized instruction: {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(20): error: Unexpected: {
+20    0000                              {
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(21): error: Unrecognized instruction: "path"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(21): error: Unexpected: "path"
+21    0000                                  "path"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(21): error: Unrecognized instruction: "${fileDirname}/${fileBasenameNoExtension}.sld"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(21): error: Unexpected: "${fileDirname}/${fileBasenameNoExtension}.sld"
+21    0000                "${fileDirname}/${fileBasenameNoExtension}.sld"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(22): error: Unrecognized instruction: }
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(22): error: Unexpected: }
+22    0000                              }
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(23): error: Unrecognized instruction: ],
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(23): error: Unexpected: ],
+23    0000                          ],
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(24): error: Unrecognized instruction: "topOfStack"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(24): error: Unexpected: "topOfStack"
+24    0000                          "topOfStack"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(24): error: Unrecognized instruction: "0",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(24): error: Unexpected: "0",
+24    0000                "0",
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unrecognized instruction: "loadObjs"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unexpected: "loadObjs"
+25    0000                         "loadObjs"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unrecognized instruction: [{"path"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unexpected: [{"path"
+25    0000                [{"path"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unrecognized instruction: "${fileDirname}/${fileBasenameNoExtension}.bin", "start"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unexpected: "${fileDirname}/${fileBasenameNoExtension}.bin", "start"
+25    0000                "${fileDirname}/${fileBasenameNoExtension}.bin", "start"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unrecognized instruction: "0x8000"}],
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(25): error: Unexpected: "0x8000"}],
+25    0000                "0x8000"}],
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(26): error: Unrecognized instruction: "execAddress"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(26): error: Unexpected: "execAddress"
+26    0000                         "execAddress"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(26): error: Unrecognized instruction: "0x8000"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(26): error: Unexpected: "0x8000"
+26    0000                "0x8000"
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(27): error: Unrecognized instruction: }
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(27): error: Unexpected: }
+27    0000                      }
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(28): error: Unrecognized instruction: ]
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(28): error: Unexpected: ]
+28    0000                  ]
+c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json(29): error: Invalid labelname: }
+29    0000              }
+30    0000
+# file closed: c:\Users\USER\Downloads\MasterMind\MasterMind\.vscode\launch.json
