@@ -520,7 +520,7 @@ loop3_3: ld HL,IX
         ld DE,10 
         ret  
 
-print_M: ; dibuja una 'M' mayuscula en el cuadrado al que apunta HL
+print_M: ; Draws a "M" where the HL aims
         ld A,%01100011
         ld (HL),A
         ld A,%01110111
