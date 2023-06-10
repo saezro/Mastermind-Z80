@@ -1,22 +1,20 @@
         DEVICE ZXSPECTRUM48
         org $8000               ; Programa ubicado a partir de $8000 = 32768
 
-inicio: ld C, %00001111;
+start:  ld C, %00001111;
         ld A, 1
         out ($FE), A ;Borde en azul
         ld HL, $5800
         ld DE, 768
-bucle:  ld (HL), C ; Bucle que pinta toda la pantalla con PAPER azul y INK blanco
+loop1:  ld (HL), C ; Bucle que pinta toda la pantalla con PAPER azul y INK blanco
         inc HL
         dec DE
         ld A, D
         or E
-        jr NZ, bucle ; fin del bucle de pintar pantalla
-
+        jr NZ, loop1 ; fin del bucle de pintar pantalla
         ld HL, $5887 ; asigna la propiedad blink al cuadrado donde se dibujara la primera flecha
         ld C, %10001111
         ld (HL), C
-
         ld HL, $5800 ; se cambia el valor de INK a azul para los tres primeros cuadrados, donde se dibujan los mensajes "Win" y "Lose", para ocultarlos al reiniciar el juego
         ld (HL), %00001001
         ld HL, $5801
@@ -36,25 +34,25 @@ increment: ld (HL), C
         ld HL, $400A
         call print_title ; imprime el titulo del juego
         ld HL, $4080
-        call print_linea1 ; imprime la linea de flechas
+        call print_line1 ; imprime la linea de flechas
 
         ld HL, $40C0
-        call print_linea2 ; imprime las lineas de circulos
+        call print_line2 ; imprime las lineas de circulos
         ld HL, $4800
-        call print_linea2
+        call print_line2
         ld HL, $4840
-        call print_linea2
+        call print_line2
         ld HL, $4880
-        call print_linea2
+        call print_line2
 
         ld HL, $5000
-        call print_linea3 ; imprime las lineas de equis
+        call print_line3 ; imprime las lineas de xs
         ld HL, $5040
-        call print_linea3
+        call print_line3
         ld HL, $5080
-        call print_linea3
+        call print_line3
         ld HL, $50C0
-        call print_linea3
+        call print_line3
 
         ; fin de imprimir pantalla. el tablero esta listo para jugar
 
@@ -67,38 +65,38 @@ increment: ld (HL), C
         ld d, 0 ; d actuara como flag. se establecera a 0 cuando no haya ninguna tecla pulsada y a 1 cuando se pulse una tecla. impedira que se lea una segunda tecla antes de soltar la primera
         ld IX, seq ; apunta a la lista que contiene todos los colores introducibles, descartando el azul por ser el fondo
 
-pre_b2: jp tec_x ; simula la pulsacion de la tecla 'X'. esto es para forzar la inicializacion de la secuencia de colores, que contiene como primer elemento un delimitador que debe ser ignorado
+pre_b2: jp key_x ; simula la pulsacion de la tecla 'X'. esto es para forzar la inicializacion de la secuencia de colores, que contiene como primer elemento un delimitador que debe ser ignorado
 
-bucle2: ; bucle principal del juego, se encarga de leer las teclas 'X', 'Z' y 'C' (alante, atras y enter)
+loop2: ; bucle principal del juego, se encarga de leer las teclas 'X', 'Z' y 'C' (alante, atras y enter)
         ld bc, $FEFE
         in a,(c)
         and %00011111 ; mascara para ignorar los bits adicionales que pueda haber
         cp %00011111
         jp z, off1 ; si las teclas no estan pulsadas pasa a off, cambia D a cero y vuelve al comienzo del bucle
         bit 0, d
-        jp nz, bucle2 ; si D es 1 significa que ya se ha pulsado una tecla y no se puede leer otra hasta que se suelte la primera. vuelve al inicio del bucle
+        jp nz, loop2 ; si D es 1 significa que ya se ha pulsado una tecla y no se puede leer otra hasta que se suelte la primera. vuelve al inicio del bucle
         ld a,a 
         cp %11011
-        jp z, tec_x ; si se pulsa 'X' salta a tec_x
+        jp z, key_x ; si se pulsa 'X' salta a key_x
         ld a,a 
         cp %11101 
-        jp z, tec_z ; si se pulsa 'Z' salta a tec_z
+        jp z, key_z ; si se pulsa 'Z' salta a key_z
         ld a,a 
         cp %10111  
-        jp z, tec_ent ; si se pulsa 'C' salta a tec_ent
-        jp bucle2 ; si se ha pulsado 'V' o 'Caps shift' vuelve al inicio del bucle sin ejecutar nada
+        jp z, key_ent ; si se pulsa 'C' salta a key_ent
+        jp loop2 ; si se ha pulsado 'V' o 'Caps shift' vuelve al inicio del bucle sin ejecutar nada
 
 seq: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Secuencia de colores introducibles, excluye el azul
 seqCpy: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Copia de la secuancia de colores usada para restablecerl la original, puesto que esta es editada durante un intento
 input: db 0, 0, 0, 0, 1 ; Lista donde se almacenan los colores introducidos por el jugador para el intento actual
 key: db %00001000, %00001010, %00001011, %00001100, 1 ; Lista donde se almacenan los colores de la clave
-intentos: db 0 ; Lleva cuenta de la columna actual para mostrar la pantalla de "Lose" si se llega a 10 intentos fallidos
+trys: db 0 ; Lleva cuenta de la columna actual para mostrar la pantalla de "Lose" si se llega a 10 intentos fallidos
 
 off1: ; reestablece el valor de D a 0 al detectar ninguna tecla pulsada y vuelve al inicio del bucle
         ld d, 0
-        jp bucle2
+        jp loop2
 
-tec_x: ; establece D a 1, avanza en uno la secuencia de colores y asigna el color al circulo actual. si se llega al final de la secuencia, se vuelve al principio
+key_x: ; establece D a 1, avanza en uno la secuencia de colores y asigna el color al circulo actual. si se llega al final de la secuencia, se vuelve al principio
         ld d, 1
         inc IX
         ld a, (ix)
@@ -106,14 +104,14 @@ tec_x: ; establece D a 1, avanza en uno la secuencia de colores y asigna el colo
         jp z, res_x
         ld a, (ix)
         cp 1
-        jp z, tec_x ; si se encuentra con un valor de 1, lo salta y pasa al siguiente, pues significa que el color ya ha sido usado en el intento actual
+        jp z, key_x ; si se encuentra con un valor de 1, lo salta y pasa al siguiente, pues significa que el color ya ha sido usado en el intento actual
         ld (HL), A
-        jp bucle2
+        jp loop2
 res_x: ; vuelve al comienzo de la secuencia de colores y al inicio del bucle
         ld IX, seq
-        jp tec_x
+        jp key_x
 
-tec_z: ; el funcionamiento es el mismo que tec_x, pero en vez de avanzar en la secuencia, retrocede
+key_z: ; el funcionamiento es el mismo que key_x, pero en vez de avanzar en la secuencia, retrocede
         ld d, 1
         dec IX ; resta en vez de sumar
         ld a, (ix)
@@ -121,14 +119,14 @@ tec_z: ; el funcionamiento es el mismo que tec_x, pero en vez de avanzar en la s
         jp z, res_z
         ld a, (ix)
         cp 1
-        jp z, tec_z
+        jp z, key_z
         ld (HL), A
-        jp bucle2
+        jp loop2
 res_z:
         ld IX, seq+8 ; vuelve al final de la secuencia de colores
-        jp tec_z
+        jp key_z
 
-tec_ent:
+key_ent:
         ld d, 1 ; establece D a 1 para que no se lean mas teclas hasta que se suelte la actual
         ld a, 1
         ld (IX), a ; substituye el valor del color seleccionado por 1 en la secuencia para que sea saltado
@@ -141,7 +139,7 @@ tec_ent:
 
         ld a, (IY) ; la lista de input tiene un delimitador de valor 1 al final. si se llega a este, se han introducido ya los cuatro colores
         cp 1
-        jp z, reset_linea ; realiza la comprobacion de intento, pinta las equis blancas y rojas, restaura la secuencia de colores y maneja el blink de las flechas
+        jp z, reset_line ; realiza la comprobacion de intento, pinta las xs blancas y rojas, restaura la secuencia de colores y maneja el blink de las flechas
 
         push bc
         ld bc, $40 ; avanza HL desde el circulo actual hasta el siguiente
@@ -151,20 +149,20 @@ tec_ent:
         ld (HL), a
         jp pre_b2 ; vuelve a esperar el input del usuario
 
-reset_linea:
+reset_line:
         push bc
         push af
         push iy
 
-        call comprob2 ; comprueba cuantos elementos de la lista de input coinciden con la de la clave, sin tomar en cuenta posicion. colorea las equis correspondientes de blanco
-        call comprob ; comprueba cuantos elementos de la lista de input coinciden con la de la clave, tomando en cuenta posicion. colorea las equis correspondientes de rojo
+        call comprob2 ; comprueba cuantos elementos de la lista de input coinciden con la de la clave, sin tomar en cuenta posicion. colorea las xs correspondientes de blanco
+        call comprob ; comprueba cuantos elementos de la lista de input coinciden con la de la clave, tomando en cuenta posicion. colorea las xs correspondientes de rojo
 
         ld bc, $100 ; apunta a la flecha de la columna recien completada
         sub HL, BC 
         ld a, %00001110 ; le quita el BLINK y la colorea de amarillo para marcarla como completada
         ld (HL), a
 
-        ld IY, intentos ; 
+        ld IY, trys ; 
         inc (IY) ; aumenta la cuenta de intentos
         ld a, (IY)
         cp 10
@@ -206,7 +204,7 @@ loop_c: ld c, (IY)
         ret
 
 comprob:
-        ;compara los contenidos de key e input y pinta las equis rojas
+        ;compara los contenidos de key e input y pinta las xs rojas
 
         ld b, 4
         ld d, 0
@@ -216,16 +214,16 @@ loop:
         ld a, (IY)
         ld c, (IX)
         cp A, C
-        jp nz, no_coincide
+        jp nz, no_match
         inc D
-no_coincide: 
+no_match: 
         inc IY
         inc IX
         dec B
         jp nz, loop
 
-        ; en este punto, D contiene el numero de equis rojas a colorear. se llama a la funcion dib_rojas para ello
-        call dib_rojas
+        ; en este punto, D contiene el numero de xs rojas a colorear. se llama a la funcion draw_reds para ello
+        call draw_reds
 
         ld d, 1 ; se reestablece D a 1 para que no se lean mas teclas hasta que se suelte la actual
         ret
@@ -244,9 +242,9 @@ loop2_1:
 loop2_2:   
         ld c, (IX)
         cp A, C
-        jp nz, no_coincide2
+        jp nz, no_match2
         inc D
-no_coincide2: 
+no_match2: 
         inc IX
         dec B
         jp nz, loop2_2
@@ -255,24 +253,24 @@ no_coincide2:
         dec b
         jp nz, loop2_1
 
-        ; en este punto, D contiene el numero de equis blancas a colorear. se llama a la funcion dib_blancas para ello
-        call dib_blancas
+        ; en este punto, D contiene el numero de xs blancas a colorear. se llama a la funcion draw_whites para ello
+        call draw_whites
 
         ld d, 1 ; se reestablece D a 1 para que no se lean mas teclas hasta que se suelte la actual
         ret
 
-dib_blancas: ; puesto que las equis ya son blancas, esta funcion borra las equis sobrantes
+draw_whites: ; puesto que las xs ya son blancas, esta funcion borra las xs sobrantes
         ld BC, HL
         push HL ; guarda HL para no interceder con las proximas funciones de dibujo
         ld HL, BC
         ld BC, $140
-        add HL, BC ; apunta a la ultima equis de la columna
+        add HL, BC ; apunta a la ultima xs de la columna
         ld BC, $40
 loop_d: 
         ld A, d
         cp 4
-        jp z, cero ; si D es 4, significa que no hace falta borrar ninguna equis, puesto que todas seran blancas
-        ld A, %01001001 ; a las equis borradas se les asigna FLASH para mostrar su ausencia
+        jp z, cero ; si D es 4, significa que no hace falta borrar ninguna xs, puesto que todas seran blancas
+        ld A, %01001001 ; a las xs borradas se les asigna FLASH para mostrar su ausencia
         ld (HL), A
         sub HL, BC
         inc D
@@ -282,20 +280,20 @@ loop_d:
 cero:   pop HL ; si D es igual a 4 al comenzar, esta funcion no hace nada. restaura HL y sale
         ret
 
-dib_rojas: ; pinta las equis rojas, empezando por arriba. si se dan cuatro equis rojas, se salta a la pantalla de "Win"
+draw_reds: ; pinta las xs rojas, empezando por arriba. si se dan cuatro xs rojas, se salta a la pantalla de "Win"
         ld BC, HL
         push HL ; guarda HL para no interceder con las proximas funciones de dibujo
         ld HL, BC
         ld BC, $80
-        add HL, BC ; situa HL en la primera equis de la columna
+        add HL, BC ; situa HL en la primera xs de la columna
         ld BC, $40
         ld E, D
 loop_d2: 
         ld A, d
-        cp 0 ; comprueba que hay equis rojas a pintar. de lo contrario, salta a cero2 donde se comprueba si se ha ganado
+        cp 0 ; comprueba que hay xs rojas a pintar. de lo contrario, salta a cero2 donde se comprueba si se ha ganado
         jp z, cero2
         ld A, %01001010
-        ld (HL), A ; pinta una equis de rojo y pasa a la siguiente
+        ld (HL), A ; pinta una xs de rojo y pasa a la siguiente
         add HL, BC
         dec D
         ld A, D
@@ -304,7 +302,7 @@ loop_d2:
 cero2:  pop HL ; restaura HL oara su uso por otras funciones
         ld A, e
         cp 4 
-        jp z, win ; si se han pintado cuatro equis rojas, se salta a la pantalla de "Win"
+        jp z, win ; si se han pintado cuatro xs rojas, se salta a la pantalla de "Win"
         ret
 
 win: ; imprime la pantalla de victoria
@@ -367,11 +365,11 @@ loop_fin: ; espera a que se pulse 'V' para restaurar la secuencia de colores y v
         bit 4, A
         jp nz, loop_fin
         call reset_color
-        jp inicio
+        jp start
 
         halt
 
-flecha: ; dibuja una flecha en el cuadrado al que apunta HL
+arrow: ; dibuja una flecha en el cuadrado al que apunta HL
         ld BC, $100 
         ld A, %00011000
         ld (HL), A
@@ -398,7 +396,7 @@ flecha: ; dibuja una flecha en el cuadrado al que apunta HL
         ld (HL), A
         ret
 
-equis:  ; dibuja una equis en el cuadrado al que apunta HL
+xs:  ; dibuja una equis en el cuadrado al que apunta HL
         ld BC, $700
         ld A, %11000011
         ld (HL), A
@@ -456,7 +454,7 @@ punto:  ; dibuja un punto en el cuadrado al que apunta HL
         ld (HL), A
         ret
 
-print_linea1: ; imprime diez flechas en cuadrados alternos en una fila
+print_line1: ; imprime diez flechas en cuadrados alternos en una fila
         inc HL
         inc HL
         inc HL
@@ -466,19 +464,19 @@ print_linea1: ; imprime diez flechas en cuadrados alternos en una fila
         ld BC,2
         ld DE,10
         inc IX
-bucle3_1: ld HL,IX
+loop3_1: ld HL,IX
         add HL,BC
         ld IX,HL
-        call flecha
+        call arrow
         ld BC,2
         dec DE
         ld A,D
         or E
-        jp nz, bucle3_1
+        jp nz, loop3_1
         ld DE,10 
         ret  
 
-print_linea2: ; imprime diez circulos en cuadrados alternos en una fila
+print_line2: ; imprime diez circulos en cuadrados alternos en una fila
         inc HL
         inc HL
         inc HL
@@ -488,7 +486,7 @@ print_linea2: ; imprime diez circulos en cuadrados alternos en una fila
         ld BC,2
         ld DE,10
         inc IX
-bucle3_2: ld HL,IX
+loop3_2: ld HL,IX
         add HL,BC
         ld IX,HL
         call punto
@@ -496,11 +494,11 @@ bucle3_2: ld HL,IX
         dec DE
         ld A,D
         or E
-        jp nz, bucle3_2
+        jp nz, loop3_2
         ld DE,10 
         ret  
 
-print_linea3: ; imprime diez equis en cuadrados alternos en una fila
+print_line3: ; imprime diez xs en cuadrados alternos en una fila
         inc HL
         inc HL
         inc HL
@@ -510,15 +508,15 @@ print_linea3: ; imprime diez equis en cuadrados alternos en una fila
         ld BC,2
         ld DE,10
         inc IX
-bucle3_3: ld HL,IX
+loop3_3: ld HL,IX
         add HL,BC
         ld IX,HL
-        call equis
+        call xs
         ld BC,2
         dec DE
         ld A,D
         or E
-        jp nz, bucle3_3
+        jp nz, loop3_3
         ld DE,10 
         ret  
 
