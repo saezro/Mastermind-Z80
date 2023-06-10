@@ -1,22 +1,22 @@
 # file opened: C:\Users\USER\Documents\Github\Mastermind\mastermind.asm
   1   0000                      DEVICE ZXSPECTRUM48
-  2   0000                      org $8000               ; Programa ubicado a partir de $8000 = 32768
+  2   0000                      org $8000               ; Program starts from $8000 = 32768
   3   8000
-  4   8000 0E 0F        start: ld C, %00001111;
+  4   8000 0E 0F        start:  ld C, %00001111;
   5   8002 3E 01                ld A, 1
-  6   8004 D3 FE                out ($FE), A ;Borde en azul
+  6   8004 D3 FE                out ($FE), A ;Blue border
   7   8006 21 00 58             ld HL, $5800
   8   8009 11 00 03             ld DE, 768
-  9   800C 71           loop1:  ld (HL), C ; Bucle que pinta toda la pantalla con PAPER azul y INK blanco
+  9   800C 71           loop1:  ld (HL), C ; loop that prints all the screen with blue
  10   800D 23                   inc HL
  11   800E 1B                   dec DE
  12   800F 7A                   ld A, D
  13   8010 B3                   or E
- 14   8011 20 F9                jr NZ, loop1 ; fin del bucle de pintar pantalla
- 15   8013 21 87 58             ld HL, $5887 ; asigna la propiedad blink al cuadrado donde se dibujara la primera flecha
+ 14   8011 20 F9                jr NZ, loop1 ; end of the loop that prints in blue
+ 15   8013 21 87 58             ld HL, $5887 ; gives the blink property to the square of the first arrow
  16   8016 0E 8F                ld C, %10001111
  17   8018 71                   ld (HL), C
- 18   8019 21 00 58             ld HL, $5800 ; se cambia el valor de INK a azul para los tres primeros cuadrados, donde se dibujan los mensajes "Win" y "Lose", para ocultarlos al reiniciar el juego
+ 18   8019 21 00 58             ld HL, $5800 ; Changes the color to BLUE of the first 4 squares to hide th WIN and loss messages after restarting the game
  19   801C 36 09                ld (HL), %00001001
  20   801E 21 01 58             ld HL, $5801
  21   8021 36 09                ld (HL), %00001001
@@ -25,7 +25,7 @@
  24   8028 21 03 58             ld HL, $5803
  25   802B 36 09                ld (HL), %00001001
  26   802D
- 27   802D 21 0A 58             ld HL, $580A ; apunta al cuadrado donde se escribira la primera 'M' del titulo. Asigna INK rojo a los 11 cuadrados donde se escribira
+ 27   802D 21 0A 58             ld HL, $580A ; Aims to the first square where is going to print "MASTER MIND"
  28   8030 0E 0A                ld C, %00001010
  29   8032 06 0B                ld B,11
  30   8034 71           increment: ld (HL), C
@@ -33,719 +33,713 @@
  32   8036 10 FC                djnz increment
  33   8038
  34   8038 21 0A 40             ld HL, $400A
- 35   803B CD 6F 84             call print_title ; imprime el titulo del juego
+ 35   803B CD EC 84             call print_title ; prints the title of the game
  36   803E 21 80 40             ld HL, $4080
- 37   8041 CD 39 83             call print_line1 ; imprime la linea de flechas
- 38   8044
- 39   8044 21 C0 40             ld HL, $40C0
- 40   8047 CD 5F 83             call print_line2 ; imprime las lineas de circulos
- 41   804A 21 00 48             ld HL, $4800
- 42   804D CD 5F 83             call print_line2
- 43   8050 21 40 48             ld HL, $4840
- 44   8053 CD 5F 83             call print_line2
- 45   8056 21 80 48             ld HL, $4880
- 46   8059 CD 5F 83             call print_line2
- 47   805C
- 48   805C 21 00 50             ld HL, $5000
- 49   805F CD 85 83             call print_line3 ; imprime las lineas de xs
- 50   8062 21 40 50             ld HL, $5040
- 51   8065 CD 85 83             call print_line3
- 52   8068 21 80 50             ld HL, $5080
- 53   806B CD 85 83             call print_line3
- 54   806E 21 C0 50             ld HL, $50C0
- 55   8071 CD 85 83             call print_line3
+ 37   8041 CD 41 83             call print_line1 ; print the line of arrows
+ 38   8044 21 C0 40             ld HL, $40C0
+ 39   8047 CD 67 83             call print_line2 ; print the line of dots
+ 40   804A 21 00 48             ld HL, $4800
+ 41   804D CD 67 83             call print_line2
+ 42   8050 21 40 48             ld HL, $4840
+ 43   8053 CD 67 83             call print_line2
+ 44   8056 21 80 48             ld HL, $4880
+ 45   8059 CD 67 83             call print_line2
+ 46   805C 21 00 50             ld HL, $5000
+ 47   805F CD 8D 83             call print_line3 ; prints the line of xs
+ 48   8062 21 40 50             ld HL, $5040
+ 49   8065 CD 8D 83             call print_line3
+ 50   8068 21 80 50             ld HL, $5080
+ 51   806B CD 8D 83             call print_line3
+ 52   806E 21 C0 50             ld HL, $50C0
+ 53   8071 CD 8D 83             call print_line3
+ 54   8074
+ 55   8074                      ; end of printing the screen, is ready to start playing
  56   8074
- 57   8074                      ; fin de imprimir pantalla. el tablero esta listo para jugar
+ 57   8074                      ;call generate_key
  58   8074
- 59   8074                      ;call generate_key
- 60   8074
- 61   8074 21 C7 58             ld HL, $58C7 ; apunta al primer circulo de la primera columna y le asigna BLINK
- 62   8077 36 8F                ld (HL), %10001111
- 63   8079
- 64   8079 FD 21 BE 80          ld IY, input ; apunta a la lista de input, donde se almacenaran los colores introducidos por el jugador para el intento actual
- 65   807D 16 00                ld d, 0 ; d actuara como flag. se establecera a 0 cuando no haya ninguna tecla pulsada y a 1 cuando se pulse una tecla. impedira que se lea una segunda tecla antes de soltar la primera
- 66   807F DD 21 AC 80          ld IX, seq ; apunta a la lista que contiene todos los colores introducibles, descartando el azul por ser el fondo
- 67   8083
- 68   8083 C3 CE 80     pre_b2: jp key_x ; simula la pulsacion de la tecla 'X'. esto es para forzar la inicializacion de la secuencia de colores, que contiene como primer elemento un delimitador que debe ser ignorado
- 69   8086
- 70   8086              loop2: ; bucle principal del juego, se encarga de leer las teclas 'X', 'Z' y 'C' (alante, atras y enter)
- 71   8086 01 FE FE             ld bc, $FEFE
- 72   8089 ED 78                in a,(c)
- 73   808B E6 1F                and %00011111 ; mascara para ignorar los bits adicionales que pueda haber
- 74   808D FE 1F                cp %00011111
- 75   808F CA C9 80             jp z, off1 ; si las teclas no estan pulsadas pasa a off, cambia D a cero y vuelve al comienzo del bucle
- 76   8092 CB 42                bit 0, d
- 77   8094 C2 86 80             jp nz, loop2 ; si D es 1 significa que ya se ha pulsado una tecla y no se puede leer otra hasta que se suelte la primera. vuelve al inicio del bucle
- 78   8097 7F                   ld a,a
- 79   8098 FE 1B                cp %11011
- 80   809A CA CE 80             jp z, key_x ; si se pulsa 'X' salta a key_x
- 81   809D 7F                   ld a,a
- 82   809E FE 1D                cp %11101
- 83   80A0 CA ED 80             jp z, key_z ; si se pulsa 'Z' salta a key_z
- 84   80A3 7F                   ld a,a
- 85   80A4 FE 17                cp %10111
- 86   80A6 CA 0C 81             jp z, key_ent ; si se pulsa 'C' salta a key_ent
- 87   80A9 C3 86 80             jp loop2 ; si se ha pulsado 'V' o 'Caps shift' vuelve al inicio del bucle sin ejecutar nada
- 88   80AC
- 89   80AC 00 88 8A 8B  seq: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Secuencia de colores introducibles, excluye el azul
- 89   80B0 8C 8D 8E 8F
- 89   80B4 00
- 90   80B5 00 88 8A 8B  seqCpy: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Copia de la secuancia de colores usada para restablecerl la original, puesto que esta es editada durante un intento
- 90   80B9 8C 8D 8E 8F
- 90   80BD 00
- 91   80BE 00 00 00 00  input: db 0, 0, 0, 0, 1 ; Lista donde se almacenan los colores introducidos por el jugador para el intento actual
- 91   80C2 01
- 92   80C3 08 0A 0B 0C  key: db %00001000, %00001010, %00001011, %00001100, 1 ; Lista donde se almacenan los colores de la clave
- 92   80C7 01
- 93   80C8 00           trys: db 0 ; Lleva cuenta de la columna actual para mostrar la pantalla de "Lose" si se llega a 10 intentos fallidos
- 94   80C9
- 95   80C9              off1: ; reestablece el valor de D a 0 al detectar ninguna tecla pulsada y vuelve al inicio del bucle
- 96   80C9 16 00                ld d, 0
- 97   80CB C3 86 80             jp loop2
- 98   80CE
- 99   80CE              key_x: ; establece D a 1, avanza en uno la secuencia de colores y asigna el color al circulo actual. si se llega al final de la secuencia, se vuelve al principio
-100   80CE 16 01                ld d, 1
-101   80D0 DD 23                inc IX
-102   80D2 DD 7E 00             ld a, (ix)
-103   80D5 FE 00                cp 0
-104   80D7 CA E6 80             jp z, res_x
-105   80DA DD 7E 00             ld a, (ix)
-106   80DD FE 01                cp 1
-107   80DF CA CE 80             jp z, key_x ; si se encuentra con un valor de 1, lo salta y pasa al siguiente, pues significa que el color ya ha sido usado en el intento actual
-108   80E2 77                   ld (HL), A
-109   80E3 C3 86 80             jp loop2
-110   80E6              res_x: ; vuelve al comienzo de la secuencia de colores y al inicio del bucle
-111   80E6 DD 21 AC 80          ld IX, seq
-112   80EA C3 CE 80             jp key_x
-113   80ED
-114   80ED              key_z: ; el funcionamiento es el mismo que key_x, pero en vez de avanzar en la secuencia, retrocede
-115   80ED 16 01                ld d, 1
-116   80EF DD 2B                dec IX ; resta en vez de sumar
-117   80F1 DD 7E 00             ld a, (ix)
-118   80F4 FE 00                cp 0
-119   80F6 CA 05 81             jp z, res_z
-120   80F9 DD 7E 00             ld a, (ix)
-121   80FC FE 01                cp 1
-122   80FE CA ED 80             jp z, key_z
-123   8101 77                   ld (HL), A
-124   8102 C3 86 80             jp loop2
-125   8105              res_z:
-126   8105 DD 21 B4 80          ld IX, seq+8 ; vuelve al final de la secuencia de colores
-127   8109 C3 ED 80             jp key_z
-128   810C
-129   810C              key_ent:
-130   810C 16 01                ld d, 1 ; establece D a 1 para que no se lean mas teclas hasta que se suelte la actual
-131   810E 3E 01                ld a, 1
-132   8110 DD 77 00             ld (IX), a ; substituye el valor del color seleccionado por 1 en la secuencia para que sea saltado
-133   8113
-134   8113 7E                   ld a, (HL)
-135   8114 E6 7F                and %01111111 ; toma el color directamente del valor del circulo, aplicando una mascara para ignorar el bit de BLINK
-136   8116 77                   ld (HL), a ; quita el BLIK del circulo actual antes de pasar al siguiente
-137   8117 FD 77 00             ld (IY), a ; almacena el color en la lista de input
-138   811A FD 23                inc IY ; avanza en la lista de input para el siguiente input
-139   811C
-140   811C FD 7E 00             ld a, (IY) ; la lista de input tiene un delimitador de valor 1 al final. si se llega a este, se han introducido ya los cuatro colores
-141   811F FE 01                cp 1
-142   8121 CA 30 81             jp z, reset_line ; realiza la comprobacion de intento, pinta las xs blancas y rojas, restaura la secuencia de colores y maneja el blink de las flechas
-143   8124
-144   8124 C5                   push bc
-145   8125 01 40 00             ld bc, $40 ; avanza HL desde el circulo actual hasta el siguiente
-146   8128 09                   add HL, bc
-147   8129 C1                   pop bc
-148   812A 3E 8F                ld a, %10001111 ; asigna BLINK al nuevo circulo
-149   812C 77                   ld (HL), a
-150   812D C3 83 80             jp pre_b2 ; vuelve a esperar el input del usuario
-151   8130
-152   8130              reset_line:
-153   8130 C5                   push bc
-154   8131 F5                   push af
-155   8132 FD E5                push iy
-156   8134
-157   8134 CD B1 81             call comprob2 ; comprueba cuantos elementos de la lista de input coinciden con la de la clave, sin tomar en cuenta posicion. colorea las xs correspondientes de blanco
-158   8137 CD 8B 81             call comprob ; comprueba cuantos elementos de la lista de input coinciden con la de la clave, tomando en cuenta posicion. colorea las xs correspondientes de rojo
-159   813A
-160   813A 01 00 01             ld bc, $100 ; apunta a la flecha de la columna recien completada
-161   813D B7 ED 42             sub HL, BC
-162   8140 3E 0E                ld a, %00001110 ; le quita el BLINK y la colorea de amarillo para marcarla como completada
-163   8142 77                   ld (HL), a
-164   8143
-165   8143 FD 21 C8 80          ld IY, trys ;
-166   8147 FD 34 00             inc (IY) ; aumenta la cuenta de intentos
-167   814A FD 7E 00             ld a, (IY)
-168   814D FE 0A                cp 10
-169   814F CA 5B 82             jp z, lose ; si se ha llegado a diez intentos, se salta a la pantalla de "Lose"
-170   8152
-171   8152 23                   inc HL
-172   8153 23                   inc HL ; apunta a la flecha de la siguiente columna
-173   8154 3E 8F                ld a, %10001111 ; le asigna BLINK
-174   8156 77                   ld (HL), a
-175   8157 01 40 00             ld bc, $40 ; pasa al primer circulo y le asigna BLINK tambien
-176   815A 09                   add HL, BC
-177   815B 3E 8F                ld a, %10001111
-178   815D 77                   ld (HL), a
-179   815E
-180   815E C1                   pop bc
-181   815F F1                   pop af
-182   8160 FD E1                pop iy
-183   8162
-184   8162 CD 68 81             call reset_color ; reestablece la secuencia de colores a la original
-185   8165
-186   8165 C3 83 80             jp pre_b2 ; vuelve a esperar el input del usuario
-187   8168
-188   8168              reset_color: ; copia los valores de seqCpy en seq de uno en uno para reestablecer la secuencia de colores
-189   8168 C5                   push BC
-190   8169
-191   8169 DD 21 AC 80          ld IX, seq
-192   816D FD 21 B5 80          ld IY, seqCpy
-193   8171 06 09                ld B, 9
-194   8173 FD 4E 00     loop_c: ld c, (IY)
-195   8176 DD 71 00             ld (IX), c
-196   8179 DD 23                inc IX
-197   817B FD 23                inc IY
-198   817D 05                   dec B
-199   817E C2 73 81             jp nz, loop_c
-200   8181
-201   8181 FD 21 BE 80          ld IY, input
-202   8185 DD 21 AC 80          ld IX, seq
-203   8189 C1                   pop BC
-204   818A C9                   ret
-205   818B
-206   818B              comprob:
-207   818B                      ;compara los contenidos de key e input y pinta las xs rojas
-208   818B
-209   818B 06 04                ld b, 4
-210   818D 16 00                ld d, 0
-211   818F FD 21 BE 80          ld IY, input
-212   8193 DD 21 C3 80          ld IX, key
-213   8197              loop:
-214   8197 FD 7E 00             ld a, (IY)
-215   819A DD 4E 00             ld c, (IX)
-216   819D BF B9                cp A, C
-217   819F C2 A3 81             jp nz, no_match
-218   81A2 14                   inc D
-219   81A3              no_match:
-220   81A3 FD 23                inc IY
-221   81A5 DD 23                inc IX
-222   81A7 05                   dec B
-223   81A8 C2 97 81             jp nz, loop
-224   81AB
-225   81AB                      ; en este punto, D contiene el numero de xs rojas a colorear. se llama a la funcion draw_reds para ello
-226   81AB CD 00 82             call draw_reds
-227   81AE
-228   81AE 16 01                ld d, 1 ; se reestablece D a 1 para que no se lean mas teclas hasta que se suelte la actual
-229   81B0 C9                   ret
-230   81B1
-231   81B1              comprob2:
-232   81B1                      ;compara cada elemento de input con cada elemento de key, y por cada coincidencia incrementa D
-233   81B1
-234   81B1 06 04                ld b, 4
-235   81B3 16 00                ld d, 0
-236   81B5 FD 21 BE 80          ld IY, input
-237   81B9              loop2_1:
-238   81B9 FD 7E 00             ld a, (IY)
-239   81BC DD 21 C3 80          ld IX, key
-240   81C0 C5                   push BC
-241   81C1 06 04                ld B, 4
-242   81C3              loop2_2:
-243   81C3 DD 4E 00             ld c, (IX)
-244   81C6 BF B9                cp A, C
-245   81C8 C2 CC 81             jp nz, no_match2
-246   81CB 14                   inc D
-247   81CC              no_match2:
-248   81CC DD 23                inc IX
-249   81CE 05                   dec B
-250   81CF C2 C3 81             jp nz, loop2_2
-251   81D2 FD 23                inc IY
-252   81D4 C1                   pop BC
-253   81D5 05                   dec b
-254   81D6 C2 B9 81             jp nz, loop2_1
-255   81D9
-256   81D9                      ; en este punto, D contiene el numero de xs blancas a colorear. se llama a la funcion draw_whites para ello
-257   81D9 CD DF 81             call draw_whites
-258   81DC
-259   81DC 16 01                ld d, 1 ; se reestablece D a 1 para que no se lean mas teclas hasta que se suelte la actual
-260   81DE C9                   ret
-261   81DF
-262   81DF              draw_whites: ; puesto que las xs ya son blancas, esta funcion borra las xs sobrantes
-263   81DF 44 4D                ld BC, HL
-264   81E1 E5                   push HL ; guarda HL para no interceder con las proximas funciones de dibujo
-265   81E2 60 69                ld HL, BC
-266   81E4 01 40 01             ld BC, $140
-267   81E7 09                   add HL, BC ; apunta a la ultima xs de la columna
-268   81E8 01 40 00             ld BC, $40
-269   81EB              loop_d:
-270   81EB 7A                   ld A, d
-271   81EC FE 04                cp 4
-272   81EE CA FE 81             jp z, cero ; si D es 4, significa que no hace falta borrar ninguna xs, puesto que todas seran blancas
-273   81F1 3E 49                ld A, %01001001 ; a las xs borradas se les asigna FLASH para mostrar su ausencia
-274   81F3 77                   ld (HL), A
-275   81F4 B7 ED 42             sub HL, BC
-276   81F7 14                   inc D
-277   81F8 7A                   ld A, D
-278   81F9 FE 04                cp 4
-279   81FB C2 EB 81             jp nz, loop_d
-280   81FE E1           cero:   pop HL ; si D es igual a 4 al comenzar, esta funcion no hace nada. restaura HL y sale
-281   81FF C9                   ret
-282   8200
-283   8200              draw_reds: ; pinta las xs rojas, empezando por arriba. si se dan cuatro xs rojas, se salta a la pantalla de "Win"
-284   8200 44 4D                ld BC, HL
-285   8202 E5                   push HL ; guarda HL para no interceder con las proximas funciones de dibujo
-286   8203 60 69                ld HL, BC
-287   8205 01 80 00             ld BC, $80
-288   8208 09                   add HL, BC ; situa HL en la primera xs de la columna
-289   8209 01 40 00             ld BC, $40
-290   820C 5A                   ld E, D
-291   820D              loop_d2:
-292   820D 7A                   ld A, d
-293   820E FE 00                cp 0 ; comprueba que hay xs rojas a pintar. de lo contrario, salta a cero2 donde se comprueba si se ha ganado
-294   8210 CA 1E 82             jp z, cero2
-295   8213 3E 4A                ld A, %01001010
-296   8215 77                   ld (HL), A ; pinta una xs de rojo y pasa a la siguiente
-297   8216 09                   add HL, BC
-298   8217 15                   dec D
-299   8218 7A                   ld A, D
-300   8219 FE 00                cp 0
-301   821B C2 0D 82             jp nz, loop_d2
-302   821E E1           cero2:  pop HL ; restaura HL oara su uso por otras funciones
-303   821F 7B                   ld A, e
-304   8220 FE 04                cp 4
-305   8222 CA 26 82             jp z, win ; si se han pintado cuatro xs rojas, se salta a la pantalla de "Win"
-306   8225 C9                   ret
-307   8226
-308   8226              win: ; imprime la pantalla de victoria
-309   8226 21 00 40             ld HL, $4000 ; se situa al comienzo de la pantalla y se llama a las funciones de impresion de la palabra "Win"
-310   8229 E5 DD E1             ld IX, HL
-311   822C 01 00 01             ld BC, $100
-312   822F CD C3 83             call print_W
-313   8232 DD E5 E1             ld HL,IX
-314   8235 23                   inc HL
-315   8236 E5 DD E1             ld IX,HL
-316   8239 CD DB 83             call print_i
-317   823C DD E5 E1             ld HL,IX
-318   823F 23                   inc HL
-319   8240 E5 DD E1             ld IX,HL
-320   8243 CD F9 83             call print_n
-321   8246
-322   8246 21 00 58             ld HL, $5800 ; asigna FLASH e INK rojo a los cuadrados de la palabra "Win"
-323   8249 36 CA                ld (HL), %11001010
-324   824B 21 01 58             ld HL, $5801
-325   824E 36 CA                ld (HL), %11001010
-326   8250 21 02 58             ld HL, $5802
-327   8253 36 CA                ld (HL), %11001010
-328   8255
-329   8255 01 FE FE             ld BC, $FEFE
-330   8258 C3 A2 82             jp loop_fin ; funcion que espera a que se pulse 'V' para reiniciar el juego
-331   825B
-332   825B              lose: ; imprime la pantalla de derrota
-333   825B 21 00 40             ld HL, $4000 ; se situa al comienzo de la pantalla y se llama a las funciones de impresion de la palabra "Lose"
-334   825E E5 DD E1             ld IX, HL
-335   8261 01 00 01             ld BC, $100
-336   8264 CD 0E 84             call print_L
-337   8267 DD E5 E1             ld HL,IX
-338   826A 23                   inc HL
-339   826B E5 DD E1             ld IX,HL
-340   826E CD 22 84             call print_o
-341   8271 DD E5 E1             ld HL,IX
-342   8274 23                   inc HL
-343   8275 E5 DD E1             ld IX,HL
-344   8278 CD 54 84             call print_s
-345   827B DD E5 E1             ld HL,IX
-346   827E 23                   inc HL
-347   827F E5 DD E1             ld IX,HL
-348   8282 CD 39 84             call print_e
-349   8285
-350   8285 21 00 58             ld HL, $5800 ; asigna FLASH e INK rojo a los cuadrados de la palabra "Lose"
-351   8288 01 00 01             ld BC, $100
-352   828B 36 CA                ld (HL), %11001010
-353   828D 21 01 58             ld HL, $5801
-354   8290 36 CA                ld (HL), %11001010
-355   8292 21 02 58             ld HL, $5802
-356   8295 36 CA                ld (HL), %11001010
-357   8297 21 03 58             ld HL, $5803
-358   829A 36 CA                ld (HL), %11001010
-359   829C
-360   829C 01 FE FE             ld BC, $FEFE
-361   829F C3 A2 82             jp loop_fin ; funcion que espera a que se pulse 'V' para reiniciar el juego
-362   82A2
-363   82A2              loop_fin: ; espera a que se pulse 'V' para restaurar la secuencia de colores y volver a la primera linea del codigo, permitiendo jugar otra vez
-364   82A2 ED 78                in a, (c)
-365   82A4 CB 67                bit 4, A
-366   82A6 C2 A2 82             jp nz, loop_fin
-367   82A9 CD 68 81             call reset_color
-368   82AC C3 00 80             jp start
-369   82AF
-370   82AF 76                   halt
-371   82B0
-372   82B0              arrow: ; dibuja una flecha en el cuadrado al que apunta HL
-373   82B0 01 00 01             ld BC, $100
-374   82B3 3E 18                ld A, %00011000
-375   82B5 77                   ld (HL), A
-376   82B6 09                   add HL,BC
-377   82B7 3E 18                ld A, %00011000
-378   82B9 77                   ld (HL), A
-379   82BA 09                   add HL,BC
-380   82BB 3E 18                ld A, %00011000
-381   82BD 77                   ld (HL), A
-382   82BE 09                   add HL,BC
-383   82BF 3E 99                ld A, %10011001
-384   82C1 77                   ld (HL), A
-385   82C2 09                   add HL,BC
-386   82C3 3E DB                ld A, %11011011
-387   82C5 77                   ld (HL), A
-388   82C6 09                   add HL,BC
-389   82C7 3E 7E                ld A, %01111110
-390   82C9 77                   ld (HL), A
-391   82CA 09                   add HL,BC
-392   82CB 3E 3C                ld A, %00111100
-393   82CD 77                   ld (HL), A
-394   82CE 09                   add HL,BC
-395   82CF 3E 18                ld A, %00011000
-396   82D1 77                   ld (HL), A
-397   82D2 C9                   ret
-398   82D3
-399   82D3              xs:  ; dibuja una equis en el cuadrado al que apunta HL
-400   82D3 01 00 07             ld BC, $700
-401   82D6 3E C3                ld A, %11000011
-402   82D8 77                   ld (HL), A
-403   82D9 09                   add HL,BC
-404   82DA 77                   ld (HL), A
-405   82DB 3E E7                ld A, %11100111
-406   82DD 01 00 06             ld BC, $600
-407   82E0 B7 ED 42             sub HL,BC
-408   82E3 77                   ld (HL), A
-409   82E4 01 00 05             ld BC, $500
-410   82E7 09                   add HL,BC
-411   82E8 77                   ld (HL), A
-412   82E9 3E 7E                ld A, %01111110
-413   82EB 01 00 04             ld BC,$400
-414   82EE B7 ED 42             sub HL,BC
-415   82F1 77                   ld (HL), A
-416   82F2 01 00 03             ld BC,$300
-417   82F5 09                   add HL,BC
-418   82F6 77                   ld (HL), A
-419   82F7 3E 3C                ld A, %00111100
-420   82F9 01 00 02             ld BC,$200
-421   82FC B7 ED 42             sub HL,BC
-422   82FF 77                   ld (HL), A
-423   8300 01 00 01             ld BC,$100
-424   8303 09                   add HL,BC
-425   8304 77                   ld (HL), A
-426   8305 C9                   ret
-427   8306
-428   8306              punto:  ; dibuja un punto en el cuadrado al que apunta HL
-429   8306 01 00 07             ld BC, $700
-430   8309 3E 3C                ld A, %00111100
-431   830B 77                   ld (HL), A
-432   830C 09                   add HL,BC
-433   830D 77                   ld (HL), A
-434   830E 3E 7E                ld A, %01111110
-435   8310 01 00 06             ld BC, $600
-436   8313 B7 ED 42             sub HL,BC
-437   8316 77                   ld (HL), A
-438   8317 01 00 05             ld BC, $500
-439   831A 09                   add HL,BC
-440   831B 77                   ld (HL), A
-441   831C 3E FF                ld A, %11111111
-442   831E 01 00 04             ld BC,$400
-443   8321 B7 ED 42             sub HL,BC
-444   8324 77                   ld (HL), A
-445   8325 01 00 03             ld BC,$300
-446   8328 09                   add HL,BC
-447   8329 77                   ld (HL), A
-448   832A 3E FF                ld A, %11111111
-449   832C 01 00 02             ld BC,$200
-450   832F B7 ED 42             sub HL,BC
-451   8332 77                   ld (HL), A
-452   8333 01 00 01             ld BC,$100
-453   8336 09                   add HL,BC
-454   8337 77                   ld (HL), A
-455   8338 C9                   ret
-456   8339
-457   8339              print_line1: ; imprime diez flechas en cuadrados alternos en una fila
-458   8339 23                   inc HL
-459   833A 23                   inc HL
-460   833B 23                   inc HL
-461   833C 23                   inc HL
-462   833D
-463   833D E5 DD E1             ld IX,HL
-464   8340 01 02 00             ld BC,2
-465   8343 11 0A 00             ld DE,10
-466   8346 DD 23                inc IX
-467   8348 DD E5 E1     loop3_1: ld HL,IX
-468   834B 09                   add HL,BC
-469   834C E5 DD E1             ld IX,HL
-470   834F CD B0 82             call arrow
-471   8352 01 02 00             ld BC,2
-472   8355 1B                   dec DE
-473   8356 7A                   ld A,D
-474   8357 B3                   or E
-475   8358 C2 48 83             jp nz, loop3_1
-476   835B 11 0A 00             ld DE,10
-477   835E C9                   ret
-478   835F
-479   835F              print_line2: ; imprime diez circulos en cuadrados alternos en una fila
-480   835F 23                   inc HL
-481   8360 23                   inc HL
-482   8361 23                   inc HL
-483   8362 23                   inc HL
-484   8363
-485   8363 E5 DD E1             ld IX,HL
-486   8366 01 02 00             ld BC,2
-487   8369 11 0A 00             ld DE,10
-488   836C DD 23                inc IX
-489   836E DD E5 E1     loop3_2: ld HL,IX
-490   8371 09                   add HL,BC
-491   8372 E5 DD E1             ld IX,HL
-492   8375 CD 06 83             call punto
-493   8378 01 02 00             ld BC,2
-494   837B 1B                   dec DE
-495   837C 7A                   ld A,D
-496   837D B3                   or E
-497   837E C2 6E 83             jp nz, loop3_2
-498   8381 11 0A 00             ld DE,10
-499   8384 C9                   ret
-500   8385
-501   8385              print_line3: ; imprime diez xs en cuadrados alternos en una fila
-502   8385 23                   inc HL
-503   8386 23                   inc HL
-504   8387 23                   inc HL
-505   8388 23                   inc HL
-506   8389
-507   8389 E5 DD E1             ld IX,HL
-508   838C 01 02 00             ld BC,2
-509   838F 11 0A 00             ld DE,10
-510   8392 DD 23                inc IX
-511   8394 DD E5 E1     loop3_3: ld HL,IX
-512   8397 09                   add HL,BC
-513   8398 E5 DD E1             ld IX,HL
-514   839B CD D3 82             call xs
-515   839E 01 02 00             ld BC,2
-516   83A1 1B                   dec DE
-517   83A2 7A                   ld A,D
-518   83A3 B3                   or E
-519   83A4 C2 94 83             jp nz, loop3_3
-520   83A7 11 0A 00             ld DE,10
-521   83AA C9                   ret
-522   83AB
-523   83AB              print_M: ; dibuja una 'M' mayuscula en el cuadrado al que apunta HL
-524   83AB 3E 63                ld A,%01100011
-525   83AD 77                   ld (HL),A
-526   83AE 3E 77                ld A,%01110111
-527   83B0 09                   add HL,BC
-528   83B1 77                   ld (HL),A
-529   83B2 3E 7F                ld A,%01111111
-530   83B4 09                   add HL,BC
-531   83B5 77                   ld (HL),A
-532   83B6 09                   add HL,BC
-533   83B7 77                   ld (HL),A
-534   83B8 3E 6B                ld A,%01101011
-535   83BA 09                   add HL,BC
-536   83BB 77                   ld (HL),A
-537   83BC 3E 63                ld A,%01100011
-538   83BE 09                   add HL,BC
-539   83BF 77                   ld (HL),A
-540   83C0 09                   add HL,BC
-541   83C1 77                   ld (HL),A
-542   83C2 C9                   ret
-543   83C3
-544   83C3              print_W: ; dibuja una 'W' mayuscula en el cuadrado al que apunta HL
-545   83C3 3E 63                ld A,%01100011
-546   83C5 09                   add HL,BC
-547   83C6 77                   ld (HL),A
-548   83C7 09                   add HL,BC
-549   83C8 77                   ld (HL),A
-550   83C9 09                   add HL,BC
-551   83CA 77                   ld (HL),A
-552   83CB 3E 6B                ld A,%01101011
-553   83CD 09                   add HL,BC
-554   83CE 77                   ld (HL),A
-555   83CF 3E 7F                ld A,%01111111
-556   83D1 09                   add HL,BC
-557   83D2 77                   ld (HL),A
-558   83D3 3E 77                ld A,%01110111
-559   83D5 09                   add HL,BC
-560   83D6 77                   ld (HL),A
-561   83D7 3E 63                ld A,%01100011
-562   83D9 77                   ld (HL),A
-563   83DA
-564   83DA C9                   ret
-565   83DB
-566   83DB              print_i: ; dibuja una 'i' en el cuadrado al que apunta HL
-567   83DB 3E 0C                ld A,%00001100 ;Escribe i
-568   83DD 77                   ld (HL),A
-569   83DE 3E 00                ld A,%00000000
-570   83E0 CD 3A 85             call print_down
-571   83E3 3E 1C                ld A,%00011100
-572   83E5 CD 3A 85             call print_down
-573   83E8 3E 0C                ld A,%00001100
-574   83EA CD 3A 85             call print_down
-575   83ED CD 3A 85             call print_down
-576   83F0 CD 3A 85             call print_down
-577   83F3 3E 1E                ld A,%00011110
-578   83F5 CD 3A 85             call print_down
-579   83F8 C9                   ret
-580   83F9
-581   83F9              print_n: ; dibuja una 'n' en el cuadrado al que apunta HL
-582   83F9 09                   add HL,BC
-583   83FA 3E 6C                ld A,%01101100 ;Escribe n
-584   83FC CD 3A 85             call print_down
-585   83FF 3E 33                ld A,%00110011
-586   8401 CD 3A 85             call print_down
-587   8404 CD 3A 85             call print_down
-588   8407 CD 3A 85             call print_down
-589   840A CD 3A 85             call print_down
-590   840D C9                   ret
-591   840E
-592   840E              print_L: ; dibuja una 'L' mayuscula en el cuadrado al que apunta HL
-593   840E 3E 60                ld A,%01100000
-594   8410 09                   add HL,BC
-595   8411 77                   ld (HL),A
-596   8412 09                   add HL,BC
-597   8413 77                   ld (HL),A
-598   8414 09                   add HL,BC
-599   8415 77                   ld (HL),A
-600   8416 09                   add HL,BC
-601   8417 77                   ld (HL),A
-602   8418 09                   add HL,BC
-603   8419 77                   ld (HL),A
-604   841A 3E 7F                ld A,%01111111
-605   841C 09                   add HL,BC
-606   841D 77                   ld (HL),A
-607   841E 3E 7F                ld A,%01111111
-608   8420 77                   ld (HL),A
-609   8421 C9                   ret
-610   8422
-611   8422              print_o: ; dibuja una 'o' en el cuadrado al que apunta HL
-612   8422 09                   add HL,BC
-613   8423 3E 3E                ld A,%00111110 ;Escribe n
-614   8425 CD 3A 85             call print_down
-615   8428 3E 63                ld A,%01100011
-616   842A CD 3A 85             call print_down
-617   842D CD 3A 85             call print_down
-618   8430 CD 3A 85             call print_down
-619   8433 3E 3E                ld A,%00111110
-620   8435 CD 3A 85             call print_down
-621   8438 C9                   ret
-622   8439
-623   8439              print_e: ; dibuja una 'e' en el cuadrado al que apunta HL
-624   8439 09                   add HL,BC
-625   843A 3E 3C                ld A,%00111100 ;Escribe e
-626   843C CD 3A 85             call print_down
-627   843F 3E 66                ld A,%01100110
-628   8441 CD 3A 85             call print_down
-629   8444 3E 7E                ld A,%01111110
-630   8446 CD 3A 85             call print_down
-631   8449 3E 60                ld A,%01100000
-632   844B CD 3A 85             call print_down
-633   844E 3E 3C                ld A,%00111100
-634   8450 CD 3A 85             call print_down
-635   8453 C9                   ret
-636   8454
-637   8454              print_s: ; dibuja una 's' en el cuadrado al que apunta HL
-638   8454 09                   add HL,BC
-639   8455 3E 3E                ld A,%00111110 ;Escribe s
-640   8457 CD 3A 85             call print_down
-641   845A 3E 60                ld A,%01100000
-642   845C CD 3A 85             call print_down
-643   845F 3E 3E                ld A,%00111110
-644   8461 CD 3A 85             call print_down
-645   8464 3E 03                ld A,%00000011
-646   8466 CD 3A 85             call print_down
-647   8469 3E 3E                ld A,%00111110
-648   846B CD 3A 85             call print_down
-649   846E C9                   ret
-650   846F
-651   846F              print_title: ; imprime las palabras "Master Mind" en once cuadrados consecutivos de una fila comenzando desde el cuadrado al que apunta HL
-652   846F
-653   846F E5 DD E1             ld IX,HL
-654   8472 01 00 01             ld BC,$100
-655   8475 CD AB 83             call print_M ;Escribe M
-656   8478 DD E5 E1             ld HL,IX
-657   847B 23                   inc HL
-658   847C E5 DD E1             ld IX,HL
-659   847F 09                   add HL,BC
-660   8480 3E 3C                ld A,%00111100 ;Escribe a
-661   8482 CD 3A 85             call print_down
-662   8485 3E 06                ld A,%00000110
-663   8487 CD 3A 85             call print_down
-664   848A 3E 3E                ld A,%00111110
-665   848C CD 3A 85             call print_down
-666   848F 3E 66                ld A,%01100110
-667   8491 CD 3A 85             call print_down
-668   8494 3E 3B                ld A,%00111011
-669   8496 CD 3A 85             call print_down
-670   8499 DD E5 E1             ld HL,IX
-671   849C 23                   inc HL
-672   849D E5 DD E1             ld IX,HL
-673   84A0 CD 54 84             call print_s ;Escribe s
-674   84A3 DD E5 E1             ld HL,IX
-675   84A6 23                   inc HL
-676   84A7 E5 DD E1             ld IX,HL
-677   84AA 3E 30                ld A,%00110000 ;Escribe t
-678   84AC 77                   ld (HL), A
-679   84AD 3E 30                ld A,%00110000
-680   84AF CD 3A 85             call print_down
-681   84B2 3E 7C                ld A,%01111100
-682   84B4 CD 3A 85             call print_down
-683   84B7 3E 30                ld A,%00110000
-684   84B9 CD 3A 85             call print_down
-685   84BC 3E 30                ld A,%00110000
-686   84BE CD 3A 85             call print_down
-687   84C1 3E 37                ld A,%00110111
-688   84C3 CD 3A 85             call print_down
-689   84C6 3E 1E                ld A,%00011110
-690   84C8 CD 3A 85             call print_down
-691   84CB DD E5 E1             ld HL,IX
-692   84CE 23                   inc HL
-693   84CF E5 DD E1             ld IX,HL
-694   84D2 CD 39 84             call print_e ;Escribe e
-695   84D5 DD E5 E1             ld HL,IX
-696   84D8 23                   inc HL
-697   84D9 E5 DD E1             ld IX,HL
-698   84DC 09                   add HL,BC
-699   84DD 3E D8                ld A,%11011000 ;Escribe r
-700   84DF CD 3A 85             call print_down
-701   84E2 3E 6C                ld A,%01101100
-702   84E4 CD 3A 85             call print_down
-703   84E7 3E 60                ld A,%01100000
-704   84E9 CD 3A 85             call print_down
-705   84EC 3E 60                ld A,%01100000
-706   84EE CD 3A 85             call print_down
-707   84F1 3E F0                ld A,%11110000
-708   84F3 CD 3A 85             call print_down
-709   84F6 DD E5 E1             ld HL,IX
-710   84F9 23                   inc HL
-711   84FA 23                   inc HL
-712   84FB E5 DD E1             ld IX,HL
-713   84FE CD AB 83             call print_M ;Escribe M
-714   8501 DD E5 E1             ld HL,IX
-715   8504 23                   inc HL
-716   8505 E5 DD E1             ld IX,HL
-717   8508 CD DB 83             call print_i ;Escribe i
-718   850B DD E5 E1             ld HL,IX
-719   850E 23                   inc HL
-720   850F E5 DD E1             ld IX,HL
-721   8512 CD F9 83             call print_n ;Escribe n
-722   8515 DD E5 E1             ld HL,IX
-723   8518 23                   inc HL
-724   8519 E5 DD E1             ld IX,HL
-725   851C 3E 0E                ld A,%00001110 ;Escribe d
-726   851E 77                   ld (HL),A
-727   851F 3E 06                ld A,%00000110
-728   8521 CD 3A 85             call print_down
-729   8524 3E 3E                ld A,%00111110
-730   8526 CD 3A 85             call print_down
-731   8529 3E 66                ld A,%01100110
-732   852B CD 3A 85             call print_down
-733   852E CD 3A 85             call print_down
-734   8531 CD 3A 85             call print_down
-735   8534 3E 3B                ld A,%00111011
-736   8536 CD 3A 85             call print_down
-737   8539 C9                   ret
-738   853A
-739   853A
-740   853A 09           print_down: add HL,BC ; aumenta HL en una fila dentro de un cuadrado especifico y le asigna el valor de A para definir su disenio
-741   853B 77                   ld (HL),A
-742   853C C9                   ret
-743   853D
+ 59   8074 21 C7 58             ld HL, $58C7 ; apunta al primer circulo de la primera columna y le asigna BLINK
+ 60   8077 36 8F                ld (HL), %10001111
+ 61   8079
+ 62   8079 FD 21 BE 80          ld IY, input ; apunta a la lista de input, donde se almacenaran los colores introducidos por el jugador para el intento actual
+ 63   807D 16 00                ld d, 0 ; d actuara como flag. se establecera a 0 cuando no haya ninguna tecla pulsada y a 1 cuando se pulse una tecla. impedira que se lea una segunda tecla antes de soltar la primera
+ 64   807F DD 21 AC 80          ld IX, seq ; apunta a la lista que contiene todos los colores introducibles, descartando el azul por ser el fondo
+ 65   8083
+ 66   8083 C3 CE 80     pre_b2: jp key_x ; simula la pulsacion de la tecla 'X'. esto es para forzar la inicializacion de la secuencia de colores, que contiene como primer elemento un delimitador que debe ser ignorado
+ 67   8086
+ 68   8086              loop2: ; principal loop that reads the letters (Z, X, C) to control the game ( <-, ->, enter)
+ 69   8086 01 FE FE             ld bc, $FEFE
+ 70   8089 ED 78                in a,(c)
+ 71   808B E6 1F                and %00011111 ; ignore bits
+ 72   808D FE 1F                cp %00011111
+ 73   808F CA C9 80             jp z, off1 ; goes of is no key is press
+ 74   8092 CB 42                bit 0, d
+ 75   8094 C2 86 80             jp nz, loop2 ; if d is 1 it means theres a key pressed
+ 76   8097 7F                   ld a,a
+ 77   8098 FE 1B                cp %11011
+ 78   809A CA CE 80             jp z, key_x ; detects x key
+ 79   809D 7F                   ld a,a
+ 80   809E FE 1D                cp %11101
+ 81   80A0 CA ED 80             jp z, key_z ;  detects z key
+ 82   80A3 7F                   ld a,a
+ 83   80A4 FE 17                cp %10111
+ 84   80A6 CA 0C 81             jp z, key_ent ;  detects v key
+ 85   80A9 C3 86 80             jp loop2 ; if v is pressed goes back
+ 86   80AC
+ 87   80AC 00 88 8A 8B  seq: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Secuencia de colores introducibles, excluye el azul
+ 87   80B0 8C 8D 8E 8F
+ 87   80B4 00
+ 88   80B5 00 88 8A 8B  seqCpy: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Copia de la secuancia de colores usada para restablecerl la original, puesto que esta es editada durante un intento
+ 88   80B9 8C 8D 8E 8F
+ 88   80BD 00
+ 89   80BE 00 00 00 00  input: db 0, 0, 0, 0, 1 ; Lista donde se almacenan los colores introducidos por el jugador para el intento actual
+ 89   80C2 01
+ 90   80C3 08 0A 0B 0C  key: db %00001000, %00001010, %00001011, %00001100, 1 ; Lista donde se almacenan los colores de la clave
+ 90   80C7 01
+ 91   80C8 00           trys: db 0 ; Lleva cuenta de la columna actual para mostrar la pantalla de "loss" si se llega a 10 intentos fallidos
+ 92   80C9
+ 93   80C9              off1: ; reestablece el valor de D a 0 al detectar ninguna tecla pulsada y vuelve al inicio del bucle
+ 94   80C9 16 00                ld d, 0
+ 95   80CB C3 86 80             jp loop2
+ 96   80CE
+ 97   80CE              key_x: ;  changes d to 1, meaning theres a key pressed, adds 1 to the sequence to go to the next color if the value is 1 means its beign use so goes to the next one
+ 98   80CE 16 01                ld d, 1
+ 99   80D0 DD 23                inc IX
+100   80D2 DD 7E 00             ld a, (ix)
+101   80D5 FE 00                cp 0
+102   80D7 CA E6 80             jp z, res_x
+103   80DA DD 7E 00             ld a, (ix)
+104   80DD FE 01                cp 1
+105   80DF CA CE 80             jp z, key_x ;if finds the value 1 goes to the next color
+106   80E2 77                   ld (HL), A
+107   80E3 C3 86 80             jp loop2
+108   80E6              res_x: ; goes back to to the beginning
+109   80E6 DD 21 AC 80          ld IX, seq
+110   80EA C3 CE 80             jp key_x
+111   80ED
+112   80ED              key_z: ; el funcionamiento es el mismo que key_x, pero en vez de avanzar en la secuencia, retrocede
+113   80ED 16 01                ld d, 1
+114   80EF DD 2B                dec IX ; resta en vez de sumar
+115   80F1 DD 7E 00             ld a, (ix)
+116   80F4 FE 00                cp 0
+117   80F6 CA 05 81             jp z, res_z
+118   80F9 DD 7E 00             ld a, (ix)
+119   80FC FE 01                cp 1
+120   80FE CA ED 80             jp z, key_z
+121   8101 77                   ld (HL), A
+122   8102 C3 86 80             jp loop2
+123   8105              res_z:
+124   8105 DD 21 B4 80          ld IX, seq+8 ; vuelve al final de la secuencia de colores
+125   8109 C3 ED 80             jp key_z
+126   810C
+127   810C              key_ent:
+128   810C 16 01                ld d, 1 ; gives d the value of 1 to express that a key is being pressed
+129   810E 3E 01                ld a, 1
+130   8110 DD 77 00             ld (IX), a ; changes the value in sequence to 1 to and the color to the sequence
+131   8113
+132   8113 7E                   ld a, (HL)
+133   8114 E6 7F                and %01111111 ; removes the BLINK property
+134   8116 77                   ld (HL), a
+135   8117 FD 77 00             ld (IY), a ; adds the color to the sequence
+136   811A FD 23                inc IY ; moves to the next value of the sequence
+137   811C
+138   811C FD 7E 00             ld a, (IY) ; detects if is the end of the sequence, if the value is 1 is the end
+139   811F FE 01                cp 1
+140   8121 CA 30 81             jp z, reset_line ; verifies the attempt
+141   8124
+142   8124 C5                   push bc
+143   8125 01 40 00             ld bc, $40 ; goes to the next dot
+144   8128 09                   add HL, bc
+145   8129 C1                   pop bc
+146   812A 3E 8F                ld a, %10001111 ; gives the BLINK property to the dot
+147   812C 77                   ld (HL), a
+148   812D C3 83 80             jp pre_b2 ; waits for input
+149   8130
+150   8130              reset_line:
+151   8130 C5                   push bc
+152   8131 F5                   push af
+153   8132 FD E5                push iy
+154   8134 CD B1 81             call comprob2 ; verifies the elemts of the list of input which match the code with out taking in care the position, prits the white X
+155   8137 CD 8B 81             call comprob ; verifies the elemts of the list of input which match the code taking in care the position, prits the red X
+156   813A
+157   813A 01 00 01             ld bc, $100 ; aims to the arrow of the column
+158   813D B7 ED 42             sub HL, BC
+159   8140 3E 0E                ld a, %00001110 ; takes out the BLINK prperty and change the color to yellow, meaning that column is done
+160   8142 77                   ld (HL), a
+161   8143
+162   8143 FD 21 C8 80          ld IY, trys ;
+163   8147 FD 34 00             inc (IY) ; adds 1 to the trys
+164   814A FD 7E 00             ld a, (IY)
+165   814D FE 0A                cp 10
+166   814F CA 5B 82             jp z, loss ; if theres 10 trys starts the loss
+167   8152 23                   inc HL
+168   8153 23                   inc HL ; aims to the next arrow
+169   8154 3E 8F                ld a, %10001111 ; gives it the BLINK property
+170   8156 77                   ld (HL), a
+171   8157 01 40 00             ld bc, $40 ; aims to the next dot and gives it the blink property
+172   815A 09                   add HL, BC
+173   815B 3E 8F                ld a, %10001111
+174   815D 77                   ld (HL), a
+175   815E C1                   pop bc
+176   815F F1                   pop af
+177   8160 FD E1                pop iy
+178   8162 CD 68 81             call reset_color ; resets the colors of the sequence
+179   8165 C3 83 80             jp pre_b2 ; waits the input
+180   8168
+181   8168              reset_color: ;copy the colors from seqCpy to seq, to restart the sequence
+182   8168 C5                   push BC
+183   8169 DD 21 AC 80          ld IX, seq
+184   816D FD 21 B5 80          ld IY, seqCpy
+185   8171 06 09                ld B, 9
+186   8173 FD 4E 00     loop_c: ld c, (IY)
+187   8176 DD 71 00             ld (IX), c
+188   8179 DD 23                inc IX
+189   817B FD 23                inc IY
+190   817D 05                   dec B
+191   817E C2 73 81             jp nz, loop_c
+192   8181 FD 21 BE 80          ld IY, input
+193   8185 DD 21 AC 80          ld IX, seq
+194   8189 C1                   pop BC
+195   818A C9                   ret
+196   818B              comprob:  ;compares key and input to know how many red x needs to be printed, the prints it
+197   818B 06 04                ld b, 4
+198   818D 16 00                ld d, 0
+199   818F FD 21 BE 80          ld IY, input
+200   8193 DD 21 C3 80          ld IX, key
+201   8197              loop:
+202   8197 FD 7E 00             ld a, (IY)
+203   819A DD 4E 00             ld c, (IX)
+204   819D BF B9                cp A, C
+205   819F C2 A3 81             jp nz, no_match
+206   81A2 14                   inc D
+207   81A3              no_match:
+208   81A3 FD 23                inc IY
+209   81A5 DD 23                inc IX
+210   81A7 05                   dec B
+211   81A8 C2 97 81             jp nz, loop  ;now d have the number of red x
+212   81AB CD 00 82             call draw_reds
+213   81AE 16 01                ld d, 1 ; give the value 1 to d that was the value before
+214   81B0 C9                   ret
+215   81B1
+216   81B1              comprob2: ;compares the elements of key and input to know have many white x needs to be printed
+217   81B1 06 04                ld b, 4
+218   81B3 16 00                ld d, 0
+219   81B5 FD 21 BE 80          ld IY, input
+220   81B9              loop2_1:
+221   81B9 FD 7E 00             ld a, (IY)
+222   81BC DD 21 C3 80          ld IX, key
+223   81C0 C5                   push BC
+224   81C1 06 04                ld B, 4
+225   81C3              loop2_2:
+226   81C3 DD 4E 00             ld c, (IX)
+227   81C6 BF B9                cp A, C
+228   81C8 C2 CC 81             jp nz, no_match2
+229   81CB 14                   inc D
+230   81CC              no_match2:
+231   81CC DD 23                inc IX
+232   81CE 05                   dec B
+233   81CF C2 C3 81             jp nz, loop2_2
+234   81D2 FD 23                inc IY
+235   81D4 C1                   pop BC
+236   81D5 05                   dec b
+237   81D6 C2 B9 81             jp nz, loop2_1 ;now d have the number of white x
+238   81D9 CD DF 81             call draw_whites
+239   81DC 16 01                ld d, 1 ; give the value 1 to d that was the value before
+240   81DE C9                   ret
+241   81DF
+242   81DF              draw_whites: ; draw wites just remove the X that left over
+243   81DF 44 4D                ld BC, HL
+244   81E1 E5                   push HL ; saves hl to dont loose it
+245   81E2 60 69                ld HL, BC
+246   81E4 01 40 01             ld BC, $140
+247   81E7 09                   add HL, BC ; aims to the last X in the column
+248   81E8 01 40 00             ld BC, $40
+249   81EB              loop_d:
+250   81EB 7A                   ld A, d
+251   81EC FE 04                cp 4
+252   81EE CA FE 81             jp z, cero ; if d is 4 means it doesnt need to remove any X
+253   81F1 3E 49                ld A, %01001001 ; gives Flash property to the one it removes
+254   81F3 77                   ld (HL), A
+255   81F4 B7 ED 42             sub HL, BC
+256   81F7 14                   inc D
+257   81F8 7A                   ld A, D
+258   81F9 FE 04                cp 4
+259   81FB C2 EB 81             jp nz, loop_d
+260   81FE E1           cero:   pop HL
+261   81FF C9                   ret
+262   8200
+263   8200              draw_reds: ; prints the red X and goes to the WIN phase if theres 4
+264   8200 44 4D                ld BC, HL
+265   8202 E5                   push HL ;saves hl to dont loose it
+266   8203 60 69                ld HL, BC
+267   8205 01 80 00             ld BC, $80
+268   8208 09                   add HL, BC ; aims to the first X of the column
+269   8209 01 40 00             ld BC, $40
+270   820C 5A                   ld E, D
+271   820D              loop_d2:
+272   820D 7A                   ld A, d
+273   820E FE 00                cp 0 ; if theres 4 red X goes to the win phase directly
+274   8210 CA 1E 82             jp z, cero2
+275   8213 3E 4A                ld A, %01001010
+276   8215 77                   ld (HL), A ; prints red the X
+277   8216 09                   add HL, BC
+278   8217 15                   dec D
+279   8218 7A                   ld A, D
+280   8219 FE 00                cp 0
+281   821B C2 0D 82             jp nz, loop_d2
+282   821E E1           cero2:  pop HL ; gives the original value of HL
+283   821F 7B                   ld A, e
+284   8220 FE 04                cp 4
+285   8222 CA 26 82             jp z, win ; goes to the win phase
+286   8225 C9                   ret
+287   8226
+288   8226              win: ; prints the victory screen
+289   8226 21 00 40             ld HL, $4000 ;aims at the top left corner
+290   8229 E5 DD E1             ld IX, HL
+291   822C 01 00 01             ld BC, $100
+292   822F CD 00 84             call print_W
+293   8232 DD E5 E1             ld HL,IX
+294   8235 23                   inc HL
+295   8236 E5 DD E1             ld IX,HL
+296   8239 CD 18 84             call print_i
+297   823C DD E5 E1             ld HL,IX
+298   823F 23                   inc HL
+299   8240 E5 DD E1             ld IX,HL
+300   8243 CD 36 84             call print_n
+301   8246
+302   8246 21 00 58             ld HL, $5800 ; changes to red color
+303   8249 36 CA                ld (HL), %11001010
+304   824B 21 01 58             ld HL, $5801
+305   824E 36 CA                ld (HL), %11001010
+306   8250 21 02 58             ld HL, $5802
+307   8253 36 CA                ld (HL), %11001010
+308   8255
+309   8255 01 FE FE             ld BC, $FEFE
+310   8258 C3 A2 82             jp loop_fin ; wait to restart
+311   825B
+312   825B              loss: ; prints the loss screen
+313   825B 21 00 40             ld HL, $4000 ; aims to the top left corner
+314   825E E5 DD E1             ld IX, HL
+315   8261 01 00 01             ld BC, $100
+316   8264 CD 69 84             call print_L
+317   8267 DD E5 E1             ld HL,IX
+318   826A 23                   inc HL
+319   826B E5 DD E1             ld IX,HL
+320   826E CD 7D 84             call print_o
+321   8271 DD E5 E1             ld HL,IX
+322   8274 23                   inc HL
+323   8275 E5 DD E1             ld IX,HL
+324   8278 CD D1 84             call print_s
+325   827B DD E5 E1             ld HL,IX
+326   827E 23                   inc HL
+327   827F E5 DD E1             ld IX,HL
+328   8282 CD D1 84             call print_s
+329   8285 21 00 58             ld HL, $5800 ; gives the red color and the Flash property
+330   8288 01 00 01             ld BC, $100
+331   828B 36 CA                ld (HL), %11001010
+332   828D 21 01 58             ld HL, $5801
+333   8290 36 CA                ld (HL), %11001010
+334   8292 21 02 58             ld HL, $5802
+335   8295 36 CA                ld (HL), %11001010
+336   8297 21 03 58             ld HL, $5803
+337   829A 36 CA                ld (HL), %11001010
+338   829C
+339   829C 01 FE FE             ld BC, $FEFE
+340   829F C3 A2 82             jp loop_fin ; waits for the restart
+341   82A2
+342   82A2              loop_fin: ;waits to press v and then restarts the game
+343   82A2 ED 78                in a, (c)
+344   82A4 CB 67                bit 4, A
+345   82A6 C2 A2 82             jp nz, loop_fin
+346   82A9 CD 68 81             call reset_color
+347   82AC FD 21 C8 80          ld IY, trys ;
+348   82B0 FD 36 00 00          ld (IY),0
+349   82B4 C3 00 80             jp start
+350   82B7
+351   82B7 76                   halt
+352   82B8
+353   82B8              arrow: ; print the arrow with high definition
+354   82B8 01 00 01             ld BC, $100
+355   82BB 3E 18                ld A, %00011000
+356   82BD 77                   ld (HL), A
+357   82BE 09                   add HL,BC
+358   82BF 3E 18                ld A, %00011000
+359   82C1 77                   ld (HL), A
+360   82C2 09                   add HL,BC
+361   82C3 3E 18                ld A, %00011000
+362   82C5 77                   ld (HL), A
+363   82C6 09                   add HL,BC
+364   82C7 3E 99                ld A, %10011001
+365   82C9 77                   ld (HL), A
+366   82CA 09                   add HL,BC
+367   82CB 3E DB                ld A, %11011011
+368   82CD 77                   ld (HL), A
+369   82CE 09                   add HL,BC
+370   82CF 3E 7E                ld A, %01111110
+371   82D1 77                   ld (HL), A
+372   82D2 09                   add HL,BC
+373   82D3 3E 3C                ld A, %00111100
+374   82D5 77                   ld (HL), A
+375   82D6 09                   add HL,BC
+376   82D7 3E 18                ld A, %00011000
+377   82D9 77                   ld (HL), A
+378   82DA C9                   ret
+379   82DB
+380   82DB              xs:  ; dibuja una equis en el cuadrado al que apunta HL
+381   82DB 01 00 07             ld BC, $700
+382   82DE 3E C3                ld A, %11000011
+383   82E0 77                   ld (HL), A
+384   82E1 09                   add HL,BC
+385   82E2 77                   ld (HL), A
+386   82E3 3E E7                ld A, %11100111
+387   82E5 01 00 06             ld BC, $600
+388   82E8 B7 ED 42             sub HL,BC
+389   82EB 77                   ld (HL), A
+390   82EC 01 00 05             ld BC, $500
+391   82EF 09                   add HL,BC
+392   82F0 77                   ld (HL), A
+393   82F1 3E 7E                ld A, %01111110
+394   82F3 01 00 04             ld BC,$400
+395   82F6 B7 ED 42             sub HL,BC
+396   82F9 77                   ld (HL), A
+397   82FA 01 00 03             ld BC,$300
+398   82FD 09                   add HL,BC
+399   82FE 77                   ld (HL), A
+400   82FF 3E 3C                ld A, %00111100
+401   8301 01 00 02             ld BC,$200
+402   8304 B7 ED 42             sub HL,BC
+403   8307 77                   ld (HL), A
+404   8308 01 00 01             ld BC,$100
+405   830B 09                   add HL,BC
+406   830C 77                   ld (HL), A
+407   830D C9                   ret
+408   830E
+409   830E              punto:  ; dibuja un punto en el cuadrado al que apunta HL
+410   830E 01 00 07             ld BC, $700
+411   8311 3E 3C                ld A, %00111100
+412   8313 77                   ld (HL), A
+413   8314 09                   add HL,BC
+414   8315 77                   ld (HL), A
+415   8316 3E 7E                ld A, %01111110
+416   8318 01 00 06             ld BC, $600
+417   831B B7 ED 42             sub HL,BC
+418   831E 77                   ld (HL), A
+419   831F 01 00 05             ld BC, $500
+420   8322 09                   add HL,BC
+421   8323 77                   ld (HL), A
+422   8324 3E FF                ld A, %11111111
+423   8326 01 00 04             ld BC,$400
+424   8329 B7 ED 42             sub HL,BC
+425   832C 77                   ld (HL), A
+426   832D 01 00 03             ld BC,$300
+427   8330 09                   add HL,BC
+428   8331 77                   ld (HL), A
+429   8332 3E FF                ld A, %11111111
+430   8334 01 00 02             ld BC,$200
+431   8337 B7 ED 42             sub HL,BC
+432   833A 77                   ld (HL), A
+433   833B 01 00 01             ld BC,$100
+434   833E 09                   add HL,BC
+435   833F 77                   ld (HL), A
+436   8340 C9                   ret
+437   8341
+438   8341              print_line1: ; prints 10 arrows in alternate squares in a row
+439   8341 23                   inc HL
+440   8342 23                   inc HL
+441   8343 23                   inc HL
+442   8344 23                   inc HL
+443   8345
+444   8345 E5 DD E1             ld IX,HL
+445   8348 01 02 00             ld BC,2
+446   834B 11 0A 00             ld DE,10
+447   834E DD 23                inc IX
+448   8350 DD E5 E1     loop3_1: ld HL,IX
+449   8353 09                   add HL,BC
+450   8354 E5 DD E1             ld IX,HL
+451   8357 CD B8 82             call arrow
+452   835A 01 02 00             ld BC,2
+453   835D 1B                   dec DE
+454   835E 7A                   ld A,D
+455   835F B3                   or E
+456   8360 C2 50 83             jp nz, loop3_1
+457   8363 11 0A 00             ld DE,10
+458   8366 C9                   ret
+459   8367
+460   8367              print_line2: ; imprime diez circulos en cuadrados alternos en una fila
+461   8367 23                   inc HL
+462   8368 23                   inc HL
+463   8369 23                   inc HL
+464   836A 23                   inc HL
+465   836B
+466   836B E5 DD E1             ld IX,HL
+467   836E 01 02 00             ld BC,2
+468   8371 11 0A 00             ld DE,10
+469   8374 DD 23                inc IX
+470   8376 DD E5 E1     loop3_2: ld HL,IX
+471   8379 09                   add HL,BC
+472   837A E5 DD E1             ld IX,HL
+473   837D CD 0E 83             call punto
+474   8380 01 02 00             ld BC,2
+475   8383 1B                   dec DE
+476   8384 7A                   ld A,D
+477   8385 B3                   or E
+478   8386 C2 76 83             jp nz, loop3_2
+479   8389 11 0A 00             ld DE,10
+480   838C C9                   ret
+481   838D
+482   838D              print_line3: ; imprime diez xs en cuadrados alternos en una fila
+483   838D 23                   inc HL
+484   838E 23                   inc HL
+485   838F 23                   inc HL
+486   8390 23                   inc HL
+487   8391
+488   8391 E5 DD E1             ld IX,HL
+489   8394 01 02 00             ld BC,2
+490   8397 11 0A 00             ld DE,10
+491   839A DD 23                inc IX
+492   839C DD E5 E1     loop3_3: ld HL,IX
+493   839F 09                   add HL,BC
+494   83A0 E5 DD E1             ld IX,HL
+495   83A3 CD DB 82             call xs
+496   83A6 01 02 00             ld BC,2
+497   83A9 1B                   dec DE
+498   83AA 7A                   ld A,D
+499   83AB B3                   or E
+500   83AC C2 9C 83             jp nz, loop3_3
+501   83AF 11 0A 00             ld DE,10
+502   83B2 C9                   ret
+503   83B3
+504   83B3              print_M: ; Draws a "M" where the HL aims
+505   83B3 3E 63                ld A,%01100011
+506   83B5 77                   ld (HL),A
+507   83B6 3E 77                ld A,%01110111
+508   83B8 09                   add HL,BC
+509   83B9 77                   ld (HL),A
+510   83BA 3E 7F                ld A,%01111111
+511   83BC 09                   add HL,BC
+512   83BD 77                   ld (HL),A
+513   83BE 09                   add HL,BC
+514   83BF 77                   ld (HL),A
+515   83C0 3E 6B                ld A,%01101011
+516   83C2 09                   add HL,BC
+517   83C3 77                   ld (HL),A
+518   83C4 3E 63                ld A,%01100011
+519   83C6 09                   add HL,BC
+520   83C7 77                   ld (HL),A
+521   83C8 09                   add HL,BC
+522   83C9 77                   ld (HL),A
+523   83CA C9                   ret
+524   83CB              print_A:
+525   83CB 09                   add HL,BC
+526   83CC 3E 3C                ld A,%00111100 ; prints A
+527   83CE CD 52 85             call print_down
+528   83D1 3E 06                ld A,%00000110
+529   83D3 CD 52 85             call print_down
+530   83D6 3E 3E                ld A,%00111110
+531   83D8 CD 52 85             call print_down
+532   83DB 3E 66                ld A,%01100110
+533   83DD CD 52 85             call print_down
+534   83E0 3E 3B                ld A,%00111011
+535   83E2 CD 52 85             call print_down
+536   83E5 C9                   ret
+537   83E6
+538   83E6              print_R:
+539   83E6 3E D8                ld A,%11011000 ;Escribe r
+540   83E8 CD 52 85             call print_down
+541   83EB 3E 6C                ld A,%01101100
+542   83ED CD 52 85             call print_down
+543   83F0 3E 60                ld A,%01100000
+544   83F2 CD 52 85             call print_down
+545   83F5 3E 60                ld A,%01100000
+546   83F7 CD 52 85             call print_down
+547   83FA 3E F0                ld A,%11110000
+548   83FC CD 52 85             call print_down
+549   83FF C9                   ret
+550   8400
+551   8400              print_W: ; dibuja una 'W' mayuscula en el cuadrado al que apunta HL
+552   8400 3E 63                ld A,%01100011
+553   8402 09                   add HL,BC
+554   8403 77                   ld (HL),A
+555   8404 09                   add HL,BC
+556   8405 77                   ld (HL),A
+557   8406 09                   add HL,BC
+558   8407 77                   ld (HL),A
+559   8408 3E 6B                ld A,%01101011
+560   840A 09                   add HL,BC
+561   840B 77                   ld (HL),A
+562   840C 3E 7F                ld A,%01111111
+563   840E 09                   add HL,BC
+564   840F 77                   ld (HL),A
+565   8410 3E 77                ld A,%01110111
+566   8412 09                   add HL,BC
+567   8413 77                   ld (HL),A
+568   8414 3E 63                ld A,%01100011
+569   8416 77                   ld (HL),A
+570   8417
+571   8417 C9                   ret
+572   8418
+573   8418              print_i: ; dibuja una 'i' en el cuadrado al que apunta HL
+574   8418 3E 0C                ld A,%00001100 ;Escribe i
+575   841A 77                   ld (HL),A
+576   841B 3E 00                ld A,%00000000
+577   841D CD 52 85             call print_down
+578   8420 3E 1C                ld A,%00011100
+579   8422 CD 52 85             call print_down
+580   8425 3E 0C                ld A,%00001100
+581   8427 CD 52 85             call print_down
+582   842A CD 52 85             call print_down
+583   842D CD 52 85             call print_down
+584   8430 3E 1E                ld A,%00011110
+585   8432 CD 52 85             call print_down
+586   8435 C9                   ret
+587   8436
+588   8436              print_n: ; dibuja una 'n' en el cuadrado al que apunta HL
+589   8436 09                   add HL,BC
+590   8437 3E 6C                ld A,%01101100 ;Escribe n
+591   8439 CD 52 85             call print_down
+592   843C 3E 33                ld A,%00110011
+593   843E CD 52 85             call print_down
+594   8441 CD 52 85             call print_down
+595   8444 CD 52 85             call print_down
+596   8447 CD 52 85             call print_down
+597   844A C9                   ret
+598   844B              print_D:
+599   844B 3E 0E                ld A,%00001110 ;prints d
+600   844D 77                   ld (HL),A
+601   844E 3E 06                ld A,%00000110
+602   8450 CD 52 85             call print_down
+603   8453 3E 3E                ld A,%00111110
+604   8455 CD 52 85             call print_down
+605   8458 3E 66                ld A,%01100110
+606   845A CD 52 85             call print_down
+607   845D CD 52 85             call print_down
+608   8460 CD 52 85             call print_down
+609   8463 3E 3B                ld A,%00111011
+610   8465 CD 52 85             call print_down
+611   8468 C9                   ret
+612   8469
+613   8469              print_L: ; dibuja una 'L' mayuscula en el cuadrado al que apunta HL
+614   8469 3E 60                ld A,%01100000
+615   846B 09                   add HL,BC
+616   846C 77                   ld (HL),A
+617   846D 09                   add HL,BC
+618   846E 77                   ld (HL),A
+619   846F 09                   add HL,BC
+620   8470 77                   ld (HL),A
+621   8471 09                   add HL,BC
+622   8472 77                   ld (HL),A
+623   8473 09                   add HL,BC
+624   8474 77                   ld (HL),A
+625   8475 3E 7F                ld A,%01111111
+626   8477 09                   add HL,BC
+627   8478 77                   ld (HL),A
+628   8479 3E 7F                ld A,%01111111
+629   847B 77                   ld (HL),A
+630   847C C9                   ret
+631   847D
+632   847D              print_o: ; dibuja una 'o' en el cuadrado al que apunta HL
+633   847D 09                   add HL,BC
+634   847E 3E 3E                ld A,%00111110 ;Escribe n
+635   8480 CD 52 85             call print_down
+636   8483 3E 63                ld A,%01100011
+637   8485 CD 52 85             call print_down
+638   8488 CD 52 85             call print_down
+639   848B CD 52 85             call print_down
+640   848E 3E 3E                ld A,%00111110
+641   8490 CD 52 85             call print_down
+642   8493 C9                   ret
+643   8494
+644   8494              print_e: ; dibuja una 'e' en el cuadrado al que apunta HL
+645   8494 09                   add HL,BC
+646   8495 3E 3C                ld A,%00111100 ;Escribe e
+647   8497 CD 52 85             call print_down
+648   849A 3E 66                ld A,%01100110
+649   849C CD 52 85             call print_down
+650   849F 3E 7E                ld A,%01111110
+651   84A1 CD 52 85             call print_down
+652   84A4 3E 60                ld A,%01100000
+653   84A6 CD 52 85             call print_down
+654   84A9 3E 3C                ld A,%00111100
+655   84AB CD 52 85             call print_down
+656   84AE C9                   ret
+657   84AF
+658   84AF              print_T:
+659   84AF 3E 30                ld A,%00110000 ;Escribe t
+660   84B1 77                   ld (HL), A
+661   84B2 3E 30                ld A,%00110000
+662   84B4 CD 52 85             call print_down
+663   84B7 3E 7C                ld A,%01111100
+664   84B9 CD 52 85             call print_down
+665   84BC 3E 30                ld A,%00110000
+666   84BE CD 52 85             call print_down
+667   84C1 3E 30                ld A,%00110000
+668   84C3 CD 52 85             call print_down
+669   84C6 3E 37                ld A,%00110111
+670   84C8 CD 52 85             call print_down
+671   84CB 3E 1E                ld A,%00011110
+672   84CD CD 52 85             call print_down
+673   84D0 C9                   ret
+674   84D1
+675   84D1              print_s: ; dibuja una 's' en el cuadrado al que apunta HL
+676   84D1 09                   add HL,BC
+677   84D2 3E 3E                ld A,%00111110 ;Escribe s
+678   84D4 CD 52 85             call print_down
+679   84D7 3E 60                ld A,%01100000
+680   84D9 CD 52 85             call print_down
+681   84DC 3E 3E                ld A,%00111110
+682   84DE CD 52 85             call print_down
+683   84E1 3E 03                ld A,%00000011
+684   84E3 CD 52 85             call print_down
+685   84E6 3E 3E                ld A,%00111110
+686   84E8 CD 52 85             call print_down
+687   84EB C9                   ret
+688   84EC
+689   84EC              print_title: ; prints the title "MASTER MIND" where HL is aiming
+690   84EC E5 DD E1             ld IX,HL
+691   84EF 01 00 01             ld BC,$100
+692   84F2 CD B3 83             call print_M ; prints M
+693   84F5 DD E5 E1             ld HL,IX
+694   84F8 23                   inc HL
+695   84F9 E5 DD E1             ld IX,HL
+696   84FC CD CB 83             call print_A
+697   84FF DD E5 E1             ld HL,IX
+698   8502 23                   inc HL
+699   8503 E5 DD E1             ld IX,HL
+700   8506 CD D1 84             call print_s
+701   8509 DD E5 E1             ld HL,IX
+702   850C 23                   inc HL
+703   850D E5 DD E1             ld IX,HL
+704   8510 CD AF 84             call print_T
+705   8513 DD E5 E1             ld HL,IX
+706   8516 23                   inc HL
+707   8517 E5 DD E1             ld IX,HL
+708   851A CD 94 84             call print_e ;Escribe e
+709   851D DD E5 E1             ld HL,IX
+710   8520 23                   inc HL
+711   8521 E5 DD E1             ld IX,HL
+712   8524 09                   add HL,BC
+713   8525 CD E6 83             call print_R
+714   8528 DD E5 E1             ld HL,IX
+715   852B 23                   inc HL
+716   852C 23                   inc HL
+717   852D E5 DD E1             ld IX,HL
+718   8530 CD B3 83             call print_M ;Escribe M
+719   8533 DD E5 E1             ld HL,IX
+720   8536 23                   inc HL
+721   8537 E5 DD E1             ld IX,HL
+722   853A CD 18 84             call print_i ;Escribe i
+723   853D DD E5 E1             ld HL,IX
+724   8540 23                   inc HL
+725   8541 E5 DD E1             ld IX,HL
+726   8544 CD 36 84             call print_n ;Escribe n
+727   8547 DD E5 E1             ld HL,IX
+728   854A 23                   inc HL
+729   854B E5 DD E1             ld IX,HL
+730   854E CD 4B 84             call print_D
+731   8551 C9                   ret
+732   8552
+733   8552
+734   8552 09           print_down: add HL,BC ; adds 1 to HL in a row inside a specific square and assigns the value of A to define his design
+735   8553 77                   ld (HL),A
+736   8554 C9                   ret
+737   8555
 # file closed: C:\Users\USER\Documents\Github\Mastermind\mastermind.asm
