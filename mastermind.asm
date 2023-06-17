@@ -12,17 +12,22 @@ loop1:  ld (HL), C ; loop that prints all the screen with blue
         ld A, D
         or E
         jr NZ, loop1 ; end of the loop that prints in blue
-        ld HL, $5887 ; gives the blink property to the square of the first arrow 
-        ld C, %10001111
-        ld (HL), C
-        ld HL, $5800 ; Changes the color to BLUE of the first 4 squares to hide th WIN and loss messages after restarting the game
-        ld (HL), %00001001
-        ld HL, $5801
-        ld (HL), %00001001
-        ld HL, $5802
-        ld (HL), %00001001
-        ld HL, $5803
-        ld (HL), %00001001
+
+        ld B, 4
+        ld C, 7
+        ld a, %10001101 ; blink property whith cian to the first arrow
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+
+       
+        
+        ld B, 0
+        ld C, 0
+        ld a, %10001001 ; blue with blue background to dont show win or loose when restart
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
 
         ld HL, $580A ; Aims to the first square where is going to print "MASTER MIND"
         ld C, %00001010
@@ -56,9 +61,13 @@ increment: ld (HL), C
 
         ;call generate_key
         
-        ld HL, $58C7 ; apunta al primer circulo de la primera columna y le asigna BLINK
-        ld (HL), %10001111
+        
+        ld B, 6
+        ld C, 7
+        ld a, %10001111 ; blue with blue background to dont show win or loose when restart
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
 
+        ld HL, $58C7
         ld IY, input ; apunta a la lista de input, donde se almacenaran los colores introducidos por el jugador para el intento actual
         ld d, 0 ; d actuara como flag. se establecera a 0 cuando no haya ninguna tecla pulsada y a 1 cuando se pulse una tecla. impedira que se lea una segunda tecla antes de soltar la primera
         ld IX, seq ; apunta a la lista que contiene todos los colores introducibles, descartando el azul por ser el fondo
@@ -70,7 +79,7 @@ loop2: ; principal loop that reads the letters (Z, X, C) to control the game ( <
         in a,(c)
         and %00011111 ; ignore bits
         cp %00011111
-        jp z, off1 ; goes of is no key is press
+        jp z, off1 ; goes of if no key is pressed
         bit 0, d
         jp nz, loop2 ; if d is 1 it means theres a key pressed
         ld a,a 
@@ -166,7 +175,7 @@ reset_line:
         jp z, loss ; if theres 10 trys starts the loss 
         inc HL
         inc HL ; aims to the next arrow
-        ld a, %10001111 ; gives it the BLINK property
+        ld a, %10001101 ; gives it the BLINK property
         ld (HL), a
         ld bc, $40 ; aims to the next dot and gives it the blink property
         add HL, BC
@@ -286,6 +295,15 @@ cero2:  pop HL ; gives the original value of HL
         ret
 
 win: ; prints the victory screen
+        ld B, 0
+        ld C, 0
+        ld a, %10001010
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+
         ld HL, $4000 ;aims at the top left corner
         ld IX, HL
         ld BC, $100
@@ -298,18 +316,25 @@ win: ; prints the victory screen
         inc HL
         ld IX,HL
         call print_n
-
-        ld HL, $5800 ; changes to red color
-        ld (HL), %11001010
-        ld HL, $5801
-        ld (HL), %11001010
-        ld HL, $5802
-        ld (HL), %11001010
+        
+       
 
         ld BC, $FEFE
         jp loop_fin ; wait to restart
 
 loss: ; prints the loss screen
+
+        ld B, 0
+        ld C, 0
+        ld a, %10001010
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+
         ld HL, $4000 ; aims to the top left corner
         ld IX, HL
         ld BC, $100
@@ -326,15 +351,6 @@ loss: ; prints the loss screen
         inc HL
         ld IX,HL
         call print_s
-        ld HL, $5800 ; gives the red color and the Flash property
-        ld BC, $100
-        ld (HL), %11001010
-        ld HL, $5801
-        ld (HL), %11001010
-        ld HL, $5802
-        ld (HL), %11001010
-        ld HL, $5803
-        ld (HL), %11001010
 
         ld BC, $FEFE
         jp loop_fin ; waits for the restart
@@ -501,7 +517,7 @@ loop3_3: ld HL,IX
         ld DE,10 
         ret  
 
-print_M: ; Draws a "M" where the HL aims
+print_M: ; Draws a "M" where the HL aims 
         ld A,%01100011
         ld (HL),A
         ld A,%01110111
@@ -734,4 +750,70 @@ print_title: ; prints the title "MASTER MIND" where HL is aiming
 print_down: add HL,BC ; adds 1 to HL in a row inside a specific square and assigns the value of A to define his design
         ld (HL),A 
         ret
+PixelYXC: ; B=y (0-23), C=x(0-31), A=color(0-15)
+          ; HL = $5800 y*32 + x
+          ;This function will print a pixel given the x, y coordinates
+        push AF
+        push DE
+        push HL
+
+        ld h, 0
+        ld l, b 
+        add hl, hl ;2*hl
+        add hl, hl
+        add hl, hl
+        add hl, hl
+        add hl, hl ;32*hl would be like y*32
+
+
+        ld d, 0
+        ld e, c
+        add hl, de ; HL = 32*y + x
+        ld de, $5800
+        add hl, de ; HL = %5800 + 32*y +x
+
+        ;Now that we have the position we print the color
+        ;We muliply by the base 3 three times so that we have a*8
+        add a
+        add a
+        add a
+        ld (hl), a
+
+        pop HL
+        pop DE
+        pop AF
+        ret
+
+Pixel2YXC: ; B=y (0-23), C=x(0-31), A=color(%COLOR %BACKGROUND)
+          ; HL = $5800 y*32 + x
+          ;This function will print a pixel given the x, y coordinates
+        push AF
+        push DE
+        push HL
+
+        ld h, 0
+        ld l, b 
+        add hl, hl ;2*hl
+        add hl, hl
+        add hl, hl
+        add hl, hl
+        add hl, hl ;32*hl would be like y*32
+
+
+        ld d, 0
+        ld e, c
+        add hl, de ; HL = 32*y + x
+        ld de, $5800
+        add hl, de ; HL = %5800 + 32*y +x
+
+        ;Now that we have the position we print the color
+        ;We muliply by the base 3 three times so that we have a*8
         
+        ld (hl), a
+
+        pop HL
+        pop DE
+        pop AF
+        ret
+
+
