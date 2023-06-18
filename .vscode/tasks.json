@@ -4,7 +4,7 @@
                 {
             "label": "sjasmplus",
             "type": "shell",
-            "command": "..\\MasterMind\\.vscode\\sjasmplus118.exe", 
+            "command": ".vscode\\sjasmplus118.exe", 
             "args": [
                 "--lst=${fileDirname}/${fileBasenameNoExtension}.lst",
                 "--sld=${fileDirname}/${fileBasenameNoExtension}.sld",
