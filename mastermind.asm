@@ -1,6 +1,6 @@
         DEVICE ZXSPECTRUM48
         org $8000               ; Program starts from $8000 = 32768
-
+; Project made by Alicia Custodia García, Marie Estelle Melaine Pamen, Rodrigo Sáez Escobar
 start:  ld C, %00001111;
         ld A, 1
         out ($FE), A ;Blue border
@@ -16,18 +16,18 @@ loop1:  ld (HL), C ; loop that prints all the screen with blue
         ld B, 4
         ld C, 7
         ld a, %10001101 ; blink property whith cian to the first arrow
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
 
-       
-        
         ld B, 0
         ld C, 0
         ld a, %10001001 ; blue with blue background to dont show win or loose when restart
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        inc C
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
 
         ld HL, $580A ; Aims to the first square where is going to print "MASTER MIND"
         ld C, %00001010
@@ -36,26 +36,11 @@ increment: ld (HL), C
         inc HL
         djnz increment
 
-        ld HL, $400A
-        call print_title ; prints the title of the game
-        ld HL, $4080
-        call print_line1 ; print the line of arrows
-        ld HL, $40C0
-        call print_line2 ; print the line of dots
-        ld HL, $4800
-        call print_line2
-        ld HL, $4840
-        call print_line2
-        ld HL, $4880
-        call print_line2
-        ld HL, $5000
-        call print_line3 ; prints the line of xs
-        ld HL, $5040
-        call print_line3
-        ld HL, $5080
-        call print_line3
-        ld HL, $50C0
-        call print_line3
+        
+        call print_title ; prints the title of the game 
+        call print_arrows ; print the line of arrows
+        call print_dots ;prints the line of dots
+        call print_xs ; prints the line of xs
 
         ; end of printing the screen, is ready to start playing
 
@@ -65,14 +50,14 @@ increment: ld (HL), C
         ld B, 6
         ld C, 7
         ld a, %10001111 ; blue with blue background to dont show win or loose when restart
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
 
         ld HL, $58C7
-        ld IY, input ; apunta a la lista de input, donde se almacenaran los colores introducidos por el jugador para el intento actual
-        ld d, 0 ; d actuara como flag. se establecera a 0 cuando no haya ninguna tecla pulsada y a 1 cuando se pulse una tecla. impedira que se lea una segunda tecla antes de soltar la primera
-        ld IX, seq ; apunta a la lista que contiene todos los colores introducibles, descartando el azul por ser el fondo
+        ld IY, input ; aims to the input list, where it saves the colors of the actual try
+        ld d, 0 ; d acts as a flag. is 0 when no key is pressed and 1 when a key is pressed. makes impossible to press to keys at the same time
+        ld IX, seq ; aims to the list of the usable colors, doesnt use the blue of the background
 
-pre_b2: jp key_x ; simula la pulsacion de la tecla 'X'. esto es para forzar la inicializacion de la secuencia de colores, que contiene como primer elemento un delimitador que debe ser ignorado
+pre_b2: jp key_x ; simulates to press 'X'. to force the iniciation of the colors
 
 loop2: ; principal loop that reads the letters (Z, X, C) to control the game ( <-, ->, enter)
         ld bc, $FEFE
@@ -93,13 +78,13 @@ loop2: ; principal loop that reads the letters (Z, X, C) to control the game ( <
         jp z, key_ent ;  detects v key
         jp loop2 ; if v is pressed goes back
 
-seq: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Secuencia de colores introducibles, excluye el azul
-seqCpy: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; Copia de la secuancia de colores usada para restablecerl la original, puesto que esta es editada durante un intento
-input: db 0, 0, 0, 0, 1 ; Lista donde se almacenan los colores introducidos por el jugador para el intento actual
-key: db %00001000, %00001010, %00001011, %00001100, 1 ; Lista donde se almacenan los colores de la clave
-trys: db 0 ; Lleva cuenta de la columna actual para mostrar la pantalla de "loss" si se llega a 10 intentos fallidos
+seq: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; usable colors, except blue
+seqCpy: db 0, %10001000, %10001010, %10001011, %10001100, %10001101, %10001110, %10001111, 0 ; copy to restart the original
+input: db 0, 0, 0, 0, 1 ; colors introduced in the try
+key: db %00001000, %00001010, %00001011, %00001100, 1 ;colors of the key
+trys: db 0 ; number of trys done
 
-off1: ; reestablece el valor de D a 0 al detectar ninguna tecla pulsada y vuelve al inicio del bucle
+off1: ; changes to 0 when theres no key pressed
         ld d, 0
         jp loop2
 
@@ -118,7 +103,7 @@ res_x: ; goes back to to the beginning
         ld IX, seq
         jp key_x
 
-key_z: ; el funcionamiento es el mismo que key_x, pero en vez de avanzar en la secuencia, retrocede
+key_z: ; same as key_x, but backwards
         ld d, 1
         dec IX ; resta en vez de sumar
         ld a, (ix)
@@ -130,7 +115,7 @@ key_z: ; el funcionamiento es el mismo que key_x, pero en vez de avanzar en la s
         ld (HL), A
         jp loop2
 res_z:
-        ld IX, seq+8 ; vuelve al final de la secuencia de colores
+        ld IX, seq+8 ; goes back to the color sequence
         jp key_z
 
 key_ent:
@@ -160,7 +145,7 @@ reset_line:
         push bc
         push af
         push iy
-        call comprob2 ; verifies the elemts of the list of input which match the code with out taking in care the position, prits the white X
+        call comprob2 ; verifies the elemts of the list of input which match the code with out taking in care the position, prints the white X
         call comprob ; verifies the elemts of the list of input which match the code taking in care the position, prits the red X
 
         ld bc, $100 ; aims to the arrow of the column
@@ -298,11 +283,11 @@ win: ; prints the victory screen
         ld B, 0
         ld C, 0
         ld a, %10001010
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color
 
         ld HL, $4000 ;aims at the top left corner
         ld IX, HL
@@ -317,8 +302,6 @@ win: ; prints the victory screen
         ld IX,HL
         call print_n
         
-       
-
         ld BC, $FEFE
         jp loop_fin ; wait to restart
 
@@ -327,13 +310,13 @@ loss: ; prints the loss screen
         ld B, 0
         ld C, 0
         ld a, %10001010
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
         inc C
-        call Pixel2YXC ; B=y (0-23), C=x(0-31), A=color(0-15)
+        call PixelYXC ; B=y (0-23), C=x(0-31), A=color(0-15)
 
         ld HL, $4000 ; aims to the top left corner
         ld IX, HL
@@ -393,7 +376,7 @@ arrow: ; print the arrow with high definition
         ld (HL), A
         ret
 
-xs:  ; dibuja una equis en el cuadrado al que apunta HL
+xs:  ; prints an X where HL is aiming
         ld BC, $700
         ld A, %11000011
         ld (HL), A
@@ -422,7 +405,7 @@ xs:  ; dibuja una equis en el cuadrado al que apunta HL
         ld (HL), A
         ret
 
-punto:  ; dibuja un punto en el cuadrado al que apunta HL
+dot:  ; prints a dot where HL is aiming
         ld BC, $700
         ld A, %00111100
         ld (HL), A
@@ -451,7 +434,8 @@ punto:  ; dibuja un punto en el cuadrado al que apunta HL
         ld (HL), A
         ret
 
-print_line1: ; prints 10 arrows in alternate squares in a row
+print_arrows: ; prints 10 arrows in alternate squares in a row
+        ld HL, $4080
         inc HL
         inc HL
         inc HL
@@ -473,7 +457,7 @@ loop3_1: ld HL,IX
         ld DE,10 
         ret  
 
-print_line2: ; imprime diez circulos en cuadrados alternos en una fila
+print_linedots: ; prints a line of dots
         inc HL
         inc HL
         inc HL
@@ -486,7 +470,7 @@ print_line2: ; imprime diez circulos en cuadrados alternos en una fila
 loop3_2: ld HL,IX
         add HL,BC
         ld IX,HL
-        call punto
+        call dot
         ld BC,2
         dec DE
         ld A,D
@@ -495,7 +479,7 @@ loop3_2: ld HL,IX
         ld DE,10 
         ret  
 
-print_line3: ; imprime diez xs en cuadrados alternos en una fila
+print_linexs: ; print the line of xs
         inc HL
         inc HL
         inc HL
@@ -551,8 +535,8 @@ print_A:
         call print_down
         ret
 
-print_R:
-        ld A,%11011000 ;Escribe r
+print_R: ;Prints r
+        ld A,%11011000 
         call print_down 
         ld A,%01101100
         call print_down
@@ -564,7 +548,7 @@ print_R:
         call print_down
         ret
 
-print_W: ; dibuja una 'W' mayuscula en el cuadrado al que apunta HL
+print_W: 
         ld A,%01100011
         add HL,BC
         ld (HL),A 
@@ -586,8 +570,8 @@ print_W: ; dibuja una 'W' mayuscula en el cuadrado al que apunta HL
         
         ret
 
-print_i: ; dibuja una 'i' en el cuadrado al que apunta HL
-        ld A,%00001100 ;Escribe i
+print_i: ; 
+        ld A,%00001100 ;
         ld (HL),A
         ld A,%00000000
         call print_down
@@ -601,9 +585,9 @@ print_i: ; dibuja una 'i' en el cuadrado al que apunta HL
         call print_down
         ret
 
-print_n: ; dibuja una 'n' en el cuadrado al que apunta HL
+print_n: 
         add HL,BC
-        ld A,%01101100 ;Escribe n
+        ld A,%01101100 
         call print_down 
         ld A,%00110011
         call print_down
@@ -612,7 +596,7 @@ print_n: ; dibuja una 'n' en el cuadrado al que apunta HL
         call print_down
         ret
 print_D:
-        ld A,%00001110 ;prints d
+        ld A,%00001110 
         ld (HL),A
         ld A,%00000110
         call print_down
@@ -626,7 +610,7 @@ print_D:
         call print_down
         ret
 
-print_L: ; dibuja una 'L' mayuscula en el cuadrado al que apunta HL
+print_L: 
         ld A,%01100000
         add HL,BC
         ld (HL),A 
@@ -645,9 +629,10 @@ print_L: ; dibuja una 'L' mayuscula en el cuadrado al que apunta HL
         ld (HL),A
         ret
 
-print_o: ; dibuja una 'o' en el cuadrado al que apunta HL
-        add HL,BC
-        ld A,%00111110 ;Escribe n
+print_o: 
+        ld A,%00000000
+        call print_down
+        ld A,%00111110 
         call print_down 
         ld A,%01100011
         call print_down
@@ -657,9 +642,9 @@ print_o: ; dibuja una 'o' en el cuadrado al que apunta HL
         call print_down
         ret
 
-print_e: ; dibuja una 'e' en el cuadrado al que apunta HL
+print_e: 
         add HL,BC
-        ld A,%00111100 ;Escribe e
+        ld A,%00111100 
         call print_down 
         ld A,%01100110
         call print_down
@@ -672,7 +657,7 @@ print_e: ; dibuja una 'e' en el cuadrado al que apunta HL
         ret
 
 print_T:
-        ld A,%00110000 ;Escribe t
+        ld A,%00110000 
         ld (HL), A
         ld A,%00110000
         call print_down
@@ -688,9 +673,9 @@ print_T:
         call print_down
         ret
 
-print_s: ; dibuja una 's' en el cuadrado al que apunta HL
+print_s: 
         add HL,BC
-        ld A,%00111110 ;Escribe s
+        ld A,%00111110
         call print_down 
         ld A,%01100000
         call print_down
@@ -703,6 +688,7 @@ print_s: ; dibuja una 's' en el cuadrado al que apunta HL
         ret
 
 print_title: ; prints the title "MASTER MIND" where HL is aiming
+        ld HL, $400A
         ld IX,HL
         ld BC,$100
         call print_M ; prints M
@@ -721,7 +707,7 @@ print_title: ; prints the title "MASTER MIND" where HL is aiming
         ld HL,IX
         inc HL
         ld IX,HL
-        call print_e ;Escribe e
+        call print_e 
         ld HL,IX
         inc HL
         ld IX,HL
@@ -731,15 +717,15 @@ print_title: ; prints the title "MASTER MIND" where HL is aiming
         inc HL
         inc HL
         ld IX,HL
-        call print_M ;Escribe M
+        call print_M 
         ld HL,IX
         inc HL
         ld IX,HL
-        call print_i ;Escribe i
+        call print_i 
         ld HL,IX
         inc HL
         ld IX,HL
-        call print_n ;Escribe n
+        call print_n 
         ld HL,IX
         inc HL
         ld IX,HL
@@ -750,43 +736,32 @@ print_title: ; prints the title "MASTER MIND" where HL is aiming
 print_down: add HL,BC ; adds 1 to HL in a row inside a specific square and assigns the value of A to define his design
         ld (HL),A 
         ret
-PixelYXC: ; B=y (0-23), C=x(0-31), A=color(0-15)
-          ; HL = $5800 y*32 + x
-          ;This function will print a pixel given the x, y coordinates
-        push AF
-        push DE
-        push HL
 
-        ld h, 0
-        ld l, b 
-        add hl, hl ;2*hl
-        add hl, hl
-        add hl, hl
-        add hl, hl
-        add hl, hl ;32*hl would be like y*32
-
-
-        ld d, 0
-        ld e, c
-        add hl, de ; HL = 32*y + x
-        ld de, $5800
-        add hl, de ; HL = %5800 + 32*y +x
-
-        ;Now that we have the position we print the color
-        ;We muliply by the base 3 three times so that we have a*8
-        add a
-        add a
-        add a
-        ld (hl), a
-
-        pop HL
-        pop DE
-        pop AF
+print_dots:
+        ld HL, $40C0
+        call print_linedots ; print the line of dots
+        ld HL, $4800
+        call print_linedots
+        ld HL, $4840
+        call print_linedots
+        ld HL, $4880
+        call print_linedots
         ret
 
-Pixel2YXC: ; B=y (0-23), C=x(0-31), A=color(%COLOR %BACKGROUND)
-          ; HL = $5800 y*32 + x
-          ;This function will print a pixel given the x, y coordinates
+print_xs:
+        ld HL, $5000
+        call print_linexs ; prints the line of xs
+        ld HL, $5040
+        call print_linexs
+        ld HL, $5080
+        call print_linexs
+        ld HL, $50C0
+        call print_linexs
+        ret
+
+
+PixelYXC: ; B=y (0-23), C=x(0-31), A=color(%COLOR %BACKGROUND)
+        ;changes the color of the pixel
         push AF
         push DE
         push HL
@@ -799,15 +774,11 @@ Pixel2YXC: ; B=y (0-23), C=x(0-31), A=color(%COLOR %BACKGROUND)
         add hl, hl
         add hl, hl ;32*hl would be like y*32
 
-
         ld d, 0
         ld e, c
         add hl, de ; HL = 32*y + x
         ld de, $5800
         add hl, de ; HL = %5800 + 32*y +x
-
-        ;Now that we have the position we print the color
-        ;We muliply by the base 3 three times so that we have a*8
         
         ld (hl), a
 
